@@ -1,0 +1,7 @@
+@media screen and (max-width: 991px) {
+    .sidebar-icon-only .sidebar-offcanvas {
+        right: 0 !important;
+    }
+
+}
+

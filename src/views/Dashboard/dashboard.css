@@ -1,0 +1,9 @@
+.transaction-chart-wrap{
+
+    justify-content: center;
+    display: flex
+;}
+.transaction-chart{
+    width: 180px !important;
+    height: 180px !important;
+}
