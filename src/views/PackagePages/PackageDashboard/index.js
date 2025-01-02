@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import TransactionHistoryChart from "../../components/charts/transactionhistorychart";
-import Loader from "../../components/loader/loader";
+import TransactionHistoryChart from "../../../components/charts/transactionhistorychart";
+import Loader from "../../../components/loader/loader";
 import "./packageDashboard.css";
 
 const PackageDashboard = () => {
@@ -31,7 +31,7 @@ useEffect(() => {
         <div className="row">
           <div className="col-12 grid-margin stretch-card">
             <div className="card corona-gradient-card">
-              <div className="card-body py-0 px-0 px-sm-3">
+              <div className="card-body py-3 px-0 px-sm-3">
                 <div className="row align-items-center">
                   <div className="col-4 col-sm-3 col-xl-2">
                     <img

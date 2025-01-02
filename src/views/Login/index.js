@@ -20,7 +20,7 @@ const Login = () => {
         <div className="content-wrapper full-page-wrapper d-flex align-items-center auth login-bg">
             <div className="card col-lg-4 mx-auto">
             <div className="card-body px-5 py-5">
-                <h3 className="card-title text-left mb-3">Login</h3>
+                <h3 className="text-center mb-3">Login</h3>
                 <form>
                 <div className="form-group">
                     <label>Username or email *</label>
@@ -32,9 +32,9 @@ const Login = () => {
                 </div>
                 <div className="form-group d-flex align-items-center justify-content-between">
                     <div className="form-check">
+                    <input type="checkbox" className="form-check-input" />
                     <label className="form-check-label">
-                        <input type="checkbox" className="form-check-input" />{" "}
-                        Remember me{" "}
+                        Remember me
                     </label>
                     </div>
                     <a href="#" className="forgot-pass">

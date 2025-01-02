@@ -100,7 +100,7 @@
           ctx.font = fontSize + "rem sans-serif";
           ctx.textAlign = 'left';
           ctx.textBaseline = "middle";
-          ctx.fillStyle = "#ffffff";
+          ctx.fillStyle = "#222222";
       
           var text = "$1200", 
               textX = Math.round((width - ctx.measureText(text).width) / 2),
@@ -113,7 +113,7 @@
           ctx.font = fontSize + "rem sans-serif";
           ctx.textAlign = 'left';
           ctx.textBaseline = "middle";
-          ctx.fillStyle = "#6c7293";
+          ctx.fillStyle = "#222222";
 
           var texts = "Total", 
               textsX = Math.round((width - ctx.measureText(text).width) / 1.93),
@@ -170,7 +170,7 @@
           ctx.font = fontSize + "rem sans-serif";
           ctx.textAlign = 'left';
           ctx.textBaseline = "middle";
-          ctx.fillStyle = "#ffffff";
+          ctx.fillStyle = "#222222";
       
           var text = "$1200", 
               textX = Math.round((width - ctx.measureText(text).width) / 2),
@@ -183,7 +183,7 @@
           ctx.font = fontSize + "rem sans-serif";
           ctx.textAlign = 'left';
           ctx.textBaseline = "middle";
-          ctx.fillStyle = "#6c7293";
+          ctx.fillStyle = "#.corona-gradient-card";
 
           var texts = "مجموع", 
               textsX = Math.round((width - ctx.measureText(text).width) / 1.93),

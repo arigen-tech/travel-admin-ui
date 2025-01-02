@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import "./package.css";
 import MultiStep from 'react-multistep';
-import Overview from '../../components/MultistepForm/Overview';
-import Itinerary from '../../components/MultistepForm/Itinerary';
-import TourGallery from '../../components/MultistepForm/TourGallery';
-import PackagePolicy from '../../components/MultistepForm/PackagePolicy';
-import Inclusion from '../../components/MultistepForm/Inclusion';
-import Pricing from '../../components/MultistepForm/Pricing';
+import Overview from '../../../components/MultistepForm/Overview';
+import Itinerary from '../../../components/MultistepForm/Itinerary';
+import TourGallery from '../../../components/MultistepForm/TourGallery';
+import PackagePolicy from '../../../components/MultistepForm/PackagePolicy';
+import Inclusion from '../../../components/MultistepForm/Inclusion';
+import Pricing from '../../../components/MultistepForm/Pricing';
 
 const Package = () => {
     const [currentPage, setCurrentPage] = useState(1);

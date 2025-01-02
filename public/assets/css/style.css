@@ -7446,7 +7446,7 @@
   --bs-gray-lighter: #e8eff4;
   --bs-gray-lightest: #e6e9ed;
   --bs-gray-dark: #12151e;
-  --bs-black: #000000;
+  --bs-black: #212529;
   --bs-gray-100: #f8f9fa;
   --bs-gray-200: #e9ecef;
   --bs-gray-300: #dee2e6;
@@ -7456,7 +7456,7 @@
   --bs-gray-700: #495057;
   --bs-gray-800: #343a40;
   --bs-gray-900: #212529;
-  --bs-primary: #0090e7;
+  --bs-primary: rgb(255, 101, 37);
   --bs-secondary: #e4eaec;
   --bs-success: #00d25b;
   --bs-info: #8f5fe8;
@@ -19895,15 +19895,15 @@ div.tagsinput {
 /* === Landing screens === */
 /* Auth */
 .auth.login-bg {
-  background: url("../images/auth/Login_bg.jpg");
+  background: url("../images/auth/Login_bg.jpeg");
   background-size: cover; }
 
 .auth .login-half-bg {
-  background: url("../images/auth/login-bg.jpg");
+  background: url("../images/auth/Login_bg.jpeg");
   background-size: cover; }
 
 .auth.register-half-bg {
-  background: url("../images/auth/Login_bg2.jpg");
+  background: url("../images/auth/Login_bg.jpeg");
   background-size: cover; }
 
 .auth.lock-full-bg {

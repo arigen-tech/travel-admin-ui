@@ -104,7 +104,7 @@ const Sidebar = () => {
               <ul className="nav flex-column sub-menu">
                 <li className="nav-item"><Link className="nav-link" href="#">Amenities</Link></li>
                 <li className="nav-item"><Link className="nav-link" href="#">Facilities</Link></li>
-                <li className="nav-item"><Link className="nav-link" href="#">Hotel Type</Link></li>
+                <li className={`nav-item ${isActive('hotelType') ? 'active' : ''}`}><Link className="nav-link" to="/hotelType">Hotel Type</Link></li>
                 <li className="nav-item"><Link className="nav-link" href="#">Hotel</Link></li>
                 <li className="nav-item"><Link className="nav-link" href="#">Room Type</Link></li>
                 <li className="nav-item"><Link className="nav-link" href="#">Rooms</Link></li>

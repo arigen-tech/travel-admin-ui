@@ -6,9 +6,10 @@ import { MenuProvider } from './context/MenuContext';
 
 const Layout =  React.lazy(() => import('./views/layout/index'));
 const Dashboard = React.lazy(() => import('./views/Dashboard/index'));
-const PackageDashboard = React.lazy(() => import('./views/PackageDashboard/index'));
-const Package = React.lazy(() => import('./views/packages/index'));
+const PackageDashboard = React.lazy(() => import('./views/PackagePages/PackageDashboard/index'));
+const Package = React.lazy(() => import('./views/PackagePages/packages/index'));
 const Login = React.lazy(() => import('./views/Login/index'));
+const HotelType = React.lazy(() => import('./views/CmsPages/Hotel/HotelType/index'));
 
 const isAuthenticated = () => {
   // Replace this with real authentication check logic
@@ -29,7 +30,7 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/packageDashboard" element={<PackageDashboard />} />
             <Route path="/package" element={<Package />} />
-
+            <Route path="/hotelType" element={<HotelType />} />
             
           </Route>
         </Routes>
