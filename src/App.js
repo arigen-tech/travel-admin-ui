@@ -3,6 +3,9 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle';
 import { MenuProvider } from './context/MenuContext';
+import Hoteldetails from './views/CmsPages/Hotel/Hotel details/Hoteldetails';
+import Amenities from './views/CmsPages/Hotel/Amenities/Amenities';
+import RoomType from './views/CmsPages/Hotel/RoomType/Roomtype';
 
 const Layout =  React.lazy(() => import('./views/layout/index'));
 const Dashboard = React.lazy(() => import('./views/Dashboard/index'));
@@ -31,7 +34,9 @@ function App() {
             <Route path="/packageDashboard" element={<PackageDashboard />} />
             <Route path="/package" element={<Package />} />
             <Route path="/hotelType" element={<HotelType />} />
-            
+            <Route path="/hotel" element={<Hoteldetails />} />
+            <Route path="/Amenities" element={<Amenities/>} />
+            <Route path="/RoomType" element={<RoomType/>} />
           </Route>
         </Routes>
       </Suspense>
