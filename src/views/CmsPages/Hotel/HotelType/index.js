@@ -206,7 +206,6 @@ const Package = () => {
                                                     paginatedData.map((hotel, index) => (
                                                         <tr key={index}>
                                                             <td>{(currentPage - 1) * resultsPerPage + index + 1}</td>
-                                                            {/*<td>{hotel.hotelTypeName}</td>*/}
                                                             <td>
                                                                 {editingRow === hotel.id ? (
                                                                     <input
@@ -230,7 +229,6 @@ const Package = () => {
                                                                     hotel.hotelTypeName
                                                                 )}
                                                             </td>
-                                                            {/*<td>{hotel.description}</td>*/}
                                                             <td>
                                                                 {editingRow === hotel.id ? (
                                                                     <input
@@ -254,15 +252,6 @@ const Package = () => {
                                                                     hotel.description
                                                                 )}
                                                             </td>
-                                                            {/*<td>*/}
-                                                            {/*    <button className="btn btn-sm btn-success me-2">*/}
-                                                            {/*        <i className="mdi mdi-square-edit-outline"></i>*/}
-                                                            {/*    </button>*/}
-                                                            {/*    <button className="btn btn-sm btn-danger"*/}
-                                                            {/*            onClick={() => removeHotelType(hotel.id)}>*/}
-                                                            {/*        <i className="mdi mdi-trash-can"></i>*/}
-                                                            {/*    </button>*/}
-                                                            {/*</td>*/}
                                                             <td>
                                                                 {editingRow === hotel.id ? (
                                                                     <><button
