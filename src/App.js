@@ -6,6 +6,11 @@ import { MenuProvider } from './context/MenuContext';
 import Hoteldetails from './views/CmsPages/Hotel/Hotel details/Hoteldetails';
 import Amenities from './views/CmsPages/Hotel/Amenities/Amenities';
 import RoomType from './views/CmsPages/Hotel/RoomType/Roomtype';
+import Hotelsettings from './views/CmsPages/Hotel/HotelSettings/Hotelsettings';
+import Rooms from './views/CmsPages/Hotel/Rooms/Rooms';
+import Mealplan from './views/CmsPages/Hotel/Mealplan/Mealplan';
+import Facilities from './views/CmsPages/Hotel/Facilities/Facilities';
+import Similarhotel from './views/CmsPages/Hotel/SimilarHotel/Similarhotel';
 
 const Layout =  React.lazy(() => import('./views/layout/index'));
 const Dashboard = React.lazy(() => import('./views/Dashboard/index'));
@@ -37,6 +42,13 @@ function App() {
             <Route path="/hotel" element={<Hoteldetails />} />
             <Route path="/Amenities" element={<Amenities/>} />
             <Route path="/RoomType" element={<RoomType/>} />
+            <Route path="/Hotelsettings" element={<Hotelsettings/>} />
+            <Route path="/Rooms" element={<Rooms/>} />
+            <Route path="/mealPlan" element={<Mealplan/>} />
+            <Route path="/facilities" element={<Facilities/>} />
+            <Route path="Similarhotel" element={<Similarhotel/>} />
+
+
           </Route>
         </Routes>
       </Suspense>

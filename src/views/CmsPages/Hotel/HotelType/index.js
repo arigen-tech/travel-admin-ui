@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { GET_HOTEL_TYPE, SET_HOTEL_TYPE,UPDATE_HOTEL_TYPE } from "../../../../config/apiConfig";
+import { GET_HOTEL_TYPE, SET_HOTEL_TYPE, UPDATE_HOTEL_TYPE } from "../../../../config/apiConfig";
 import { getRequest, postRequest, putRequest } from "../../../../service/apiService";
 
 const Package = () => {
@@ -194,119 +194,119 @@ const Package = () => {
                                         <div className="table-responsive packagelist">
                                             <table className="table table-bordered table-hover align-middle">
                                                 <thead className="table-light">
-                                                <tr>
-                                                    <th>S.No.</th>
-                                                    <th>Hotel Type</th>
-                                                    <th>Description</th>
-                                                    <th>Action</th>
-                                                </tr>
+                                                    <tr>
+                                                        <th>S.No.</th>
+                                                        <th>Hotel Type</th>
+                                                        <th>Description</th>
+                                                        <th>Action</th>
+                                                    </tr>
                                                 </thead>
                                                 <tbody>
-                                                {paginatedData.length > 0 ? (
-                                                    paginatedData.map((hotel, index) => (
-                                                        <tr key={index}>
-                                                            <td>{(currentPage - 1) * resultsPerPage + index + 1}</td>
-                                                            {/*<td>{hotel.hotelTypeName}</td>*/}
-                                                            <td>
-                                                                {editingRow === hotel.id ? (
-                                                                    <input
-                                                                        type="text"
-                                                                        className="form-control"
-                                                                        value={hotel.hotelTypeName}
-                                                                        onChange={(e) =>
-                                                                            setHotelData((prevData) =>
-                                                                                prevData.map((h) =>
-                                                                                    h.id === hotel.id
-                                                                                        ? {
-                                                                                            ...h,
-                                                                                            hotelTypeName: e.target.value
-                                                                                        }
-                                                                                        : h
+                                                    {paginatedData.length > 0 ? (
+                                                        paginatedData.map((hotel, index) => (
+                                                            <tr key={index}>
+                                                                <td>{(currentPage - 1) * resultsPerPage + index + 1}</td>
+                                                                {/*<td>{hotel.hotelTypeName}</td>*/}
+                                                                <td>
+                                                                    {editingRow === hotel.id ? (
+                                                                        <input
+                                                                            type="text"
+                                                                            className="form-control"
+                                                                            value={hotel.hotelTypeName}
+                                                                            onChange={(e) =>
+                                                                                setHotelData((prevData) =>
+                                                                                    prevData.map((h) =>
+                                                                                        h.id === hotel.id
+                                                                                            ? {
+                                                                                                ...h,
+                                                                                                hotelTypeName: e.target.value
+                                                                                            }
+                                                                                            : h
+                                                                                    )
                                                                                 )
-                                                                            )
-                                                                        }
-                                                                    />
-                                                                ) : (
-                                                                    hotel.hotelTypeName
-                                                                )}
-                                                            </td>
-                                                            {/*<td>{hotel.description}</td>*/}
-                                                            <td>
-                                                                {editingRow === hotel.id ? (
-                                                                    <input
-                                                                        type="text"
-                                                                        className="form-control"
-                                                                        value={hotel.description}
-                                                                        onChange={(e) =>
-                                                                            setHotelData((prevData) =>
-                                                                                prevData.map((h) =>
-                                                                                    h.id === hotel.id
-                                                                                        ? {
-                                                                                            ...h,
-                                                                                            description: e.target.value
-                                                                                        }
-                                                                                        : h
+                                                                            }
+                                                                        />
+                                                                    ) : (
+                                                                        hotel.hotelTypeName
+                                                                    )}
+                                                                </td>
+                                                                {/*<td>{hotel.description}</td>*/}
+                                                                <td>
+                                                                    {editingRow === hotel.id ? (
+                                                                        <input
+                                                                            type="text"
+                                                                            className="form-control"
+                                                                            value={hotel.description}
+                                                                            onChange={(e) =>
+                                                                                setHotelData((prevData) =>
+                                                                                    prevData.map((h) =>
+                                                                                        h.id === hotel.id
+                                                                                            ? {
+                                                                                                ...h,
+                                                                                                description: e.target.value
+                                                                                            }
+                                                                                            : h
+                                                                                    )
                                                                                 )
-                                                                            )
-                                                                        }
-                                                                    />
-                                                                ) : (
-                                                                    hotel.description
-                                                                )}
-                                                            </td>
-                                                            {/*<td>*/}
-                                                            {/*    <button className="btn btn-sm btn-success me-2">*/}
-                                                            {/*        <i className="mdi mdi-square-edit-outline"></i>*/}
-                                                            {/*    </button>*/}
-                                                            {/*    <button className="btn btn-sm btn-danger"*/}
-                                                            {/*            onClick={() => removeHotelType(hotel.id)}>*/}
-                                                            {/*        <i className="mdi mdi-trash-can"></i>*/}
-                                                            {/*    </button>*/}
-                                                            {/*</td>*/}
-                                                            <td>
-                                                                {editingRow === hotel.id ? (
-                                                                    <><button
-                                                                        className="btn btn-sm btn-primary me-2"
-                                                                        onClick={() => updateHotelData(hotel)}>
-                                                                        Save
-                                                                    </button>
-                                                                    <button
-                                                                        className="btn btn-sm btn-secondary me-2"
-                                                                        onClick={() => {
-                                                                            setHotelData((prevData) =>
-                                                                                prevData.map((h) => (h.id === editedHotel.id ? editedHotel : h))
-                                                                            );
-                                                                            setEditingRow(null);
-                                                                        }}
-                                                                    >
-                                                                        Cancel
-                                                                    </button>
-                                                                    </>
-                                                                ) : (
-                                                                    <button
-                                                                        className="btn btn-sm btn-success me-2"
-                                                                        onClick={() => {
-                                                                            setEditingRow(hotel.id);
-                                                                            setEditedHotel({ ...hotel });
-                                                                        }}>
-                                                                        <i className="mdi mdi-square-edit-outline"></i>
-                                                                    </button>
+                                                                            }
+                                                                        />
+                                                                    ) : (
+                                                                        hotel.description
+                                                                    )}
+                                                                </td>
+                                                                {/*<td>*/}
+                                                                {/*    <button className="btn btn-sm btn-success me-2">*/}
+                                                                {/*        <i className="mdi mdi-square-edit-outline"></i>*/}
+                                                                {/*    </button>*/}
+                                                                {/*    <button className="btn btn-sm btn-danger"*/}
+                                                                {/*            onClick={() => removeHotelType(hotel.id)}>*/}
+                                                                {/*        <i className="mdi mdi-trash-can"></i>*/}
+                                                                {/*    </button>*/}
+                                                                {/*</td>*/}
+                                                                <td>
+                                                                    {editingRow === hotel.id ? (
+                                                                        <><button
+                                                                            className="btn btn-sm btn-primary me-2"
+                                                                            onClick={() => updateHotelData(hotel)}>
+                                                                            Save
+                                                                        </button>
+                                                                            <button
+                                                                                className="btn btn-sm btn-secondary me-2"
+                                                                                onClick={() => {
+                                                                                    setHotelData((prevData) =>
+                                                                                        prevData.map((h) => (h.id === editedHotel.id ? editedHotel : h))
+                                                                                    );
+                                                                                    setEditingRow(null);
+                                                                                }}
+                                                                            >
+                                                                                Cancel
+                                                                            </button>
+                                                                        </>
+                                                                    ) : (
+                                                                        <button
+                                                                            className="btn btn-sm btn-success me-2"
+                                                                            onClick={() => {
+                                                                                setEditingRow(hotel.id);
+                                                                                setEditedHotel({ ...hotel });
+                                                                            }}>
+                                                                            <i className="mdi mdi-square-edit-outline"></i>
+                                                                        </button>
 
-                                                                )}
+                                                                    )}
                                                                     <button className="btn btn-sm btn-danger"
-                                                                            onClick={() => removeHotelType(hotel.id)}>
+                                                                        onClick={() => removeHotelType(hotel.id)}>
                                                                         <i className="mdi mdi-trash-can"></i>
                                                                     </button>
+                                                                </td>
+                                                            </tr>
+                                                        ))
+                                                    ) : (
+                                                        <tr>
+                                                            <td colSpan="4" className="text-center">
+                                                                No Data Available
                                                             </td>
                                                         </tr>
-                                                    ))
-                                                ) : (
-                                                    <tr>
-                                                        <td colSpan="4" className="text-center">
-                                                            No Data Available
-                                                        </td>
-                                                    </tr>
-                                                )}
+                                                    )}
                                                 </tbody>
                                             </table>
                                         </div>

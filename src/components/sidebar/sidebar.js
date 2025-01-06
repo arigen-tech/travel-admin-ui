@@ -104,15 +104,22 @@ const Sidebar = () => {
               <ul className="nav flex-column sub-menu">
               <li className={`nav-item ${isActive('Amenities') ? 'active' : ''}`}><Link className="nav-link" to="/Amenities">Amenities</Link></li>
 
-                <li className="nav-item"><Link className="nav-link" href="#">Facilities</Link></li>
+                <li className={`nav-item ${isActive('facilities') ? 'active' : ''}`}><Link className="nav-link" to="/facilities">Facilities</Link></li>
+
                 <li className={`nav-item ${isActive('hotelType') ? 'active' : ''}`}><Link className="nav-link" to="/hotelType">Hotel Type</Link></li>
                 <li className={`nav-item ${isActive('hotel') ? 'active' : ''}`}><Link className="nav-link" to="/hotel">Hotel</Link></li>
                 <li className={`nav-item ${isActive('roomType') ? 'active' : ''}`}><Link className="nav-link" to="/roomType">Room Type</Link></li>
 
-                <li className="nav-item"><Link className="nav-link" href="#">Rooms</Link></li>
-                <li className="nav-item"><Link className="nav-link" href="#">Similar Hotel</Link></li>
-                <li className="nav-item"><Link className="nav-link" href="#">Hotel Settings</Link></li>
-                <li className="nav-item"><Link className="nav-link" href="#">Meal Plan</Link></li>
+                <li className={`nav-item ${isActive('rooms') ? 'active' : ''}`}><Link className="nav-link" to="/rooms">Rooms</Link></li>
+
+                <li className={`nav-item ${isActive('similarHotel') ? 'active' : ''}`}><Link className="nav-link" to="/similarHotel">Similar Hotel</Link></li>
+
+                <li className={`nav-item ${isActive('hotelSettings') ? 'active' : ''}`}><Link className="nav-link" to="/hotelSettings">Hotel Settings</Link></li>
+
+                
+                <li className={`nav-item ${isActive('mealPlan') ? 'active' : ''}`}><Link className="nav-link" to="/mealPlan">Meal Plan</Link></li>
+
+                
               </ul>
             </div>
           </li>
