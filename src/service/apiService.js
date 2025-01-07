@@ -9,11 +9,18 @@ const BASE_URL = API_HOST;
  */
 export const getRequest = async (endpoint, headers = {}) => {
     try {
+        let token;
+        if(localStorage.token){
+            token={"Authorization":`Bearer ${localStorage.getItem('token')}`};
+        }
+        else{
+            token={"Authorization":`Bearer ${sessionStorage.getItem('token')}`};
+        }
         const response = await fetch(`${BASE_URL}${endpoint}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                ...headers,
+                ...token,...headers,
             },
         });
         if (!response.ok) {
@@ -35,10 +42,18 @@ export const getRequest = async (endpoint, headers = {}) => {
  */
 export const postRequest = async (endpoint, data, headers = {}) => {
     try {
+        let token;
+        if(localStorage.token){
+            token={"Authorization":`Bearer ${localStorage.getItem('token')}`};
+        }
+        else{
+            token={"Authorization":`Bearer ${sessionStorage.getItem('token')}`};
+        }
         const response = await fetch(`${BASE_URL}${endpoint}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                ...token,
                 ...headers,
             },
             body: JSON.stringify(data),
@@ -62,10 +77,18 @@ export const postRequest = async (endpoint, data, headers = {}) => {
  */
 export const putRequest = async (endpoint, data, headers = {}) => {
     try {
+        let token;
+        if(localStorage.token){
+            token={"Authorization":`Bearer ${localStorage.getItem('token')}`};
+        }
+        else{
+            token={"Authorization":`Bearer ${sessionStorage.getItem('token')}`};
+        }
         const response = await fetch(`${BASE_URL}${endpoint}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
+                ...token,
                 ...headers,
             },
             body: JSON.stringify(data),
