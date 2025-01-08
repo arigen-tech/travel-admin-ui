@@ -125,24 +125,16 @@ const RoomType = () => {
                                 </>
                             ) : (
                                 <form className="forms row">
-                                <div className="form-group col-md-6">
-                                    <label>Hotel Name</label>
+                                <div className="form-group col-md-12">
+                                    <label> Name(max-50)</label>
                                     <input
                                         type="text"
                                         className="form-control"
-                                        id="hotelname"
-                                        placeholder="Enter Hotel Name"
+                                        id="name"
+                                        placeholder="Room type"
                                     />
                                 </div>
-                                <div className="form-group col-md-6">
-                                    <label>No. of Star</label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        id="star"
-                                        placeholder="Enter No. of Star"
-                                    />
-                                </div>
+                               
                                 <div className="form-group col-md-12 d-flex justify-content-end">
                                     <button type="submit" className="btn btn-primary me-2">
                                         Submit

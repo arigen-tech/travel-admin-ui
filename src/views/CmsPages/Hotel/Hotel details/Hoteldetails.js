@@ -67,11 +67,50 @@ const Hoteldetails = () => {
             setCurrentPage(currentPage - 1);
         }
     };
+
     const handleNext = () => {
         if (currentPage < totalPages) {
             setCurrentPage(currentPage + 1);
         }
     };
+    const [rows, setRows] = useState([
+        { id: 1, name: '', alt: '', file: null }
+    ])
+    const [hotelRows, setHotelRows] = useState([
+        { id: 1, file: null }
+    ]);
+
+
+    const addImageRow = (e) => {
+        e.preventDefault();
+        const newId = rows.length > 0 ? Math.max(...rows.map(r => r.id)) + 1 : 1
+        setRows([...rows, { id: newId, name: '', alt: '', file: null }])
+    }
+
+    const removeImageRow = (id) => {
+        setRows(rows.filter(row => row.id !== id))
+        setShowForm(true)
+    }
+
+
+    const addHotelRow = (e) => {
+        e.preventDefault();
+        const newId = hotelRows.length > 0 ? Math.max(...hotelRows.map(r => r.id)) + 1 : 1;
+        setHotelRows([...hotelRows, { id: newId, file: null }]);
+    };
+
+    const removeHotelRow = (id) => {
+        setHotelRows(hotelRows.filter(row => row.id !== id));
+    };
+
+    const handleInputChange = (id, field, value) => {
+        setRows(rows.map(row =>
+            row.id === id ? { ...row, [field]: value } : row
+        ))
+    }
+
+
+
     const paginatedData = hotelData.slice(
         (currentPage - 1) * resultsPerPage,
         currentPage * resultsPerPage
@@ -114,8 +153,8 @@ const Hoteldetails = () => {
                                     <div className="table-responsive packagelist">
                                         <table className="table table-bordered table-hover align-middle">
                                             <thead className="table-light">
-                                                <tr >
-                                                    <th>S No.</th>
+                                                <tr>
+                                                    <th>S.No.</th>
                                                     <th>Name</th>
                                                     <th>Hotel type</th>
                                                     <th>Country</th>
@@ -403,37 +442,37 @@ const Hoteldetails = () => {
                                         />
                                     </div>
                                     <div className="form-group col-md-12">
-                                        <label>Package Include</label>
+                                        <label>Amenities</label>
                                         <div className="row mx-0">
                                             <div className="form-check col-md-1">
-                                                <input className="form-check-input" type="checkbox" id="flights" />
-                                                <label className="form-check-label" htmlFor="flights">Flights</label>
+                                                <input className="form-check-input" type="checkbox" id="Bathroom" />
+                                                <label className="form-check-label" htmlFor="Bathroom">Bathroom</label>
                                             </div>
                                             <div className="form-check col-md-1">
-                                                <input className="form-check-input" type="checkbox" id="hotelStay" />
-                                                <label className="form-check-label" htmlFor="hotelStay">Hotel Stay</label>
+                                                <input className="form-check-input" type="checkbox" id="Spa" />
+                                                <label className="form-check-label" htmlFor="Spa">Spa</label>
                                             </div>
                                             <div className="form-check col-md-1">
-                                                <input className="form-check-input" type="checkbox" id="meals" />
-                                                <label className="form-check-label" htmlFor="meals">Meals</label>
+                                                <input className="form-check-input" type="checkbox" id="Swimming pool" />
+                                                <label className="form-check-label" htmlFor="Swimming pool">Swimming pool</label>
                                             </div>
                                             <div className="form-check col-md-1">
-                                                <input className="form-check-input" type="checkbox" id="transfers" />
-                                                <label className="form-check-label" htmlFor="transfers">Transfers</label>
+                                                <input className="form-check-input" type="checkbox" id="test" />
+                                                <label className="form-check-label" htmlFor="test">test</label>
                                             </div>
                                             <div className="form-check col-md-1">
-                                                <input className="form-check-input" type="checkbox" id="sightseeing" />
-                                                <label className="form-check-label" htmlFor="sightseeing">Sightseeing</label>
+                                                <input className="form-check-input" type="checkbox" id="Wheelchair" />
+                                                <label className="form-check-label" htmlFor="Wheelchair">Wheelchair</label>
                                             </div>
                                             <div className="form-check col-md-1">
-                                                <input className="form-check-input" type="checkbox" id="cruise" />
-                                                <label className="form-check-label" htmlFor="cruise">Cruise</label>
+                                                <input className="form-check-input" type="checkbox" id="Wifi" />
+                                                <label className="form-check-label" htmlFor="Wifi">Wifi</label>
                                             </div>
                                         </div>
                                     </div>
 
                                     <div className="form-group col-md-12">
-                                        <label>Overview Description</label>
+                                        <label>Short Description</label>
                                         <div ref={editorToolbarRef}></div>
                                         <CKEditor
                                             editor={DecoupledEditor}
@@ -463,7 +502,7 @@ const Hoteldetails = () => {
                                         />
                                     </div>
                                     <div className="form-group col-md-12">
-                                        <label>Tour Summary</label>
+                                        <label>Long Description</label>
                                         <div ref={summaryEditorToolbarRef}></div>
                                         <CKEditor
                                             editor={DecoupledEditor}
@@ -498,79 +537,142 @@ const Hoteldetails = () => {
                                             onChange={handleEditorChange}
                                         />
                                     </div>
-                                    <h4>Select Image</h4>
-                                    <div className="form-group col-md-4">
-                                        <label>Image Name #1</label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="star"
-                                            placeholder="Heading"
-                                        />
+                                    <div className="form-check col-md-12">
+                                        <input className="form-check-input" type="checkbox" id=" isFeatured" />
+                                        <label className="form-check-label" htmlFor="isFeatured">isFeatured </label>
                                     </div>
-                                    <div className="form-group col-md-4">
-                                        <label>ALT tag #1</label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="star"
-                                            placeholder="Alt Tag #1"
-                                        />
+                                    <div className="container mt-4">
+                                        <div className="row mb-3 align-items-center">
+                                            <div className="col">
+                                                <h4 className="mb-0">Select Image</h4>
+                                            </div>
+                                            <div className="col-auto">
+                                                <button onClick={addImageRow} className="btn btn-success">
+                                                    <i className="bi bi-plus-lg me-1"></i> +
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        {rows.map((row, index) => (
+                                            <div key={row.id} className="row mb-3 pb-3 border-bottom position-relative">
+                                                <div className="form-group col-md-4">
+                                                    <label>Image Name #{index + 1}</label>
+                                                    <input
+                                                        type="text"
+                                                        className="form-control"
+                                                        id="star"
+                                                        placeholder="Heading"
+                                                    />
+                                                </div>
+                                                <div className="form-group col-md-4">
+                                                    <label>Alt Tag #{index + 1}</label>
+                                                    <input
+                                                        type="text"
+                                                        className="form-control"
+                                                        id="star"
+                                                        placeholder="Alt Tag"
+                                                    />
+                                                </div>
+
+                                                <div className="form-group col-md-4">
+                                                    <label htmlFor="imagePicker">Image File #{index + 1}</label>
+                                                    <input
+                                                        type="file"
+                                                        className="form-control"
+                                                        id="imagePicker"
+                                                        accept="image/*"
+                                                        placeholder="No image chosen"
+                                                        onChange={(e) => {
+                                                            const fileName = e.target.files[0]?.name || "No image chosen";
+                                                        }}
+                                                    />
+                                                </div>
+                                                {index > 0 && (
+                                                    <button
+                                                        onClick={() => removeImageRow(row.id)}
+                                                        className="btn btn-danger btn-sm position-absolute top-0 end-0 mt-2 me-2"
+                                                        style={{ width: '30px', height: '30px', padding: '0', borderRadius: '50%' }}
+                                                    >
+                                                        <i className="bi bi-cross">X</i>
+                                                    </button>
+                                                )}
+                                            </div>
+                                        ))}
                                     </div>
-                                    <div className="form-group col-md-4">
-                                        <label htmlFor="imagePicker">Image File #1</label>
-                                        <input
-                                            type="file"
-                                            className="form-control"
-                                            id="imagePicker"
-                                            accept="image/*"
-                                            placeholder="No image chosen"
-                                            onChange={(e) => {
-                                                const fileName = e.target.files[0]?.name || "No image chosen";
-                                            }}
-                                        />
+
+
+
+                                    <div className="container mt-4">
+                                        <div className="row mb-3 align-items-center">
+                                            <div className="col">
+                                                <h4>Upload Hotel Content</h4>
+                                            </div>
+                                            <div className="col-auto">
+                                                <button onClick={addHotelRow} className="btn btn-success">
+                                                    <i className="bi bi-plus-lg me-1"></i> +
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        {hotelRows.map((row, index) => (
+                                            <div key={row.id} className="row mb-3 pb-3 border-bottom position-relative">
+                                                <div className="form-group col-md-4">
+                                                    <label htmlFor={`hotelImagePicker${row.id}`}>Image File #{index + 1}</label>
+                                                    <input
+                                                        type="file"
+                                                        className="form-control"
+                                                        id={`hotelImagePicker${row.id}`}
+                                                        accept="image/*"
+                                                        placeholder="No image chosen"
+                                                    />
+                                                </div>
+                                                <div className="form-group col-md-4">
+                                                    <label htmlFor="imagePicker">Image File #{index + 1}</label>
+                                                    <input
+                                                        type="file"
+                                                        className="form-control"
+                                                        id={`imagePicker${row.id}`}
+                                                        accept="image/*"
+                                                        placeholder="No image chosen"
+                                                        onChange={(e) => {
+                                                            const fileName = e.target.files[0]?.name || "No image chosen";
+                                                        }}
+                                                    />
+                                                </div>
+                                                <div className="form-group col-md-12">
+                                                    <label></label>
+                                                    <div ref={uploadHeadContent}></div>
+                                                    <CKEditor
+                                                        editor={DecoupledEditor}
+                                                        config={{
+                                                            toolbar: {
+                                                                shouldNotGroupWhenFull: true,
+                                                            },
+                                                        }}
+                                                        onReady={(editor) => {
+                                                            const toolbarContainer = uploadHeadContent.current;
+                                                            toolbarContainer.innerHTML = "";
+                                                            toolbarContainer.appendChild(editor.ui.view.toolbar.element);
+                                                        }}
+                                                        onChange={handleEditorChange}
+                                                    />
+                                                </div>
+                                                {index > 0 && (
+                                                    <button
+                                                        onClick={() => removeHotelRow(row.id)}
+                                                        className="btn btn-danger btn-sm position-absolute top-0 end-0 mt-2 me-2"
+                                                        style={{ width: '30px', height: '30px', padding: '0', borderRadius: '50%' }}
+                                                    >
+                                                        <i className="bi bi-x">X</i>
+                                                    </button>
+                                                )}
+                                            </div>
+                                        ))}
                                     </div>
-                                    <h4>Upload Hotel Content</h4>
-                                    <div className="form-group col-md-4">
-                                        <label>Heading #1</label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="star"
-                                            placeholder="Heading"
-                                        />
-                                    </div>
-                                    <div className="form-group col-md-4">
-                                        <label htmlFor="imagePicker">Image File #1</label>
-                                        <input
-                                            type="file"
-                                            className="form-control"
-                                            id="imagePicker"
-                                            accept="image/*"
-                                            placeholder="No image chosen"
-                                            onChange={(e) => {
-                                                const fileName = e.target.files[0]?.name || "No image chosen";
-                                            }}
-                                        />
-                                    </div>
-                                    <div className="form-group col-md-12">
-                                        <label></label>
-                                        <div ref={uploadHeadContent}></div>
-                                        <CKEditor
-                                            editor={DecoupledEditor}
-                                            config={{
-                                                toolbar: {
-                                                    shouldNotGroupWhenFull: true,
-                                                },
-                                            }}
-                                            onReady={(editor) => {
-                                                const toolbarContainer = uploadHeadContent.current;
-                                                toolbarContainer.innerHTML = "";
-                                                toolbarContainer.appendChild(editor.ui.view.toolbar.element);
-                                            }}
-                                            onChange={handleEditorChange}
-                                        />
-                                    </div>
+
+
+
+
 
 
                                     <div className="form-group col-md-12 d-flex justify-content-end">

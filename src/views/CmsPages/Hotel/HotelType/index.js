@@ -346,7 +346,7 @@ const Package = () => {
                                 </>
                             ) : (
                                 <form className="forms row" onSubmit={addHotelType}>
-                                    <div className="form-group col-md-6">
+                                    <div className="form-group col-md-12">
                                         <label>Hotel Type</label>
                                         <input
                                             type="text"
@@ -358,13 +358,13 @@ const Package = () => {
                                             required
                                         />
                                     </div>
-                                    <div className="form-group col-md-6">
-                                        <label>Description</label>
+                                    <div className="form-group col-md-12">
+                                        <label>No. Of Star</label>
                                         <input
                                             type="text"
                                             className="form-control"
                                             name="description"
-                                            placeholder="Enter Description"
+                                            placeholder="No. Of Star "
                                             value={formData.description}
                                             onChange={handleInputChange}
                                             required
