@@ -24,7 +24,7 @@ const Facilities = () => {
                 <div className="col-12 grid-margin stretch-card">
                     <div className="card form-card">
                         <div className="card-header d-flex justify-content-between align-items-center">
-                            <h4 className="card-title">Hotel Type</h4>
+                            <h4 className="card-title">Facilities</h4>
                             <div>
                                 {!showForm ? (
                                     <>
@@ -58,15 +58,17 @@ const Facilities = () => {
                                             <thead className="table-light">
                                             <tr>
                                                     <th>S.No.</th>
-                                                    <th>Hotel Type</th>
-                                                    <th>Description</th>
+                                                    <th>Name</th>
+                                                    <th>Icon</th>
+                                                    <th>	Category</th>
                                                     <th>Action</th>
+
                                                 </tr>
                                             </thead>
 
                                                 <tbody>
                                                 <tr>
-                                                    <td colSpan="4" className="text-center">
+                                                    <td colSpan="5" className="text-center">
                                                         No Data Available
                                                     </td>
                                                 </tr>
@@ -111,9 +113,7 @@ const Facilities = () => {
                                 <div className="form-group col-md-12">
                                 <select className="form-select">
                                                                 <option value="">Category Type</option>
-                                                                <option value="single">1</option>
-                                                                <option value="double">2</option>
-                                                                <option value="king">3</option>
+                                                               
                                                             </select>
                                 </div>
                                 <div className="form-group col-md-12">
@@ -126,7 +126,7 @@ const Facilities = () => {
                                     />
                                 </div>
                                 <div className="form-group col-md-12">
-                                    <label htmlFor="bannerText">Icon Only fa icons are allowed</label>
+                                    <label htmlFor="bannerText">Icon Only MUI icons are allowed</label>
                                     <textarea
                                         type="text"
                                         className="form-control"

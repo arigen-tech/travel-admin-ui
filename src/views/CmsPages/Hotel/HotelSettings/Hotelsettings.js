@@ -36,20 +36,20 @@ const Hotelsettings = () => {
                                         type="text"
                                         className="form-control"
                                         id="Internation Hotels"
-                                        placeholder="Internation Hotels"
+                                        placeholder="Domestic Hotels"
                                     />
                                 </div>
                                 <div className="form-group col-md-4">
-                                    <label>ISubHeading</label>
+                                    <label>SubHeading</label>
                                     <input
                                         type="text"
                                         className="form-control"
-                                        id="star"
-                                        placeholder="ISubHeading"
+                                        id="subheading"
+                                        placeholder="SubHeading"
                                     />
                                 </div>
                                 <div className="form-group col-md-4">
-                                    <label htmlFor="imagePicker">Image</label>
+                                    <label htmlFor="imagePicker">Upload Image</label>
                                     <input
                                         type="file"
                                         className="form-control"
@@ -79,13 +79,14 @@ const Hotelsettings = () => {
                                     </button>
                                    
                                 </div>
+                                <h5>International Hotel</h5>
                                 <div className="form-group col-md-4">
                                     <label>Heading</label>
                                     <input
                                         type="text"
                                         className="form-control"
-                                        id="Internation Hotels"
-                                        placeholder="Internation Hotels"
+                                        id="International Hotels"
+                                        placeholder="International Hotels"
                                     />
                                 </div>
                                 <div className="form-group col-md-4">
