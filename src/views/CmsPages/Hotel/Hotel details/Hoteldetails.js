@@ -1,17 +1,62 @@
-import React, { useState, useRef } from "react";
+import React, {useState, useRef, useEffect} from "react";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import DecoupledEditor from "@ckeditor/ckeditor5-build-decoupled-document";
+import {getRequest} from "../../../../service/apiService";
+import {GET_HOTEL_DETAILS, GET_HOTEL_TYPE} from "../../../../config/apiConfig";
 const Hoteldetails = () => {
     const [showForm, setShowForm] = useState(false);
+    const [hotelData, setHotelData] = useState([]);
+    const [totalPages, setTotalPages] = useState(1);
     const summaryEditorToolbarRef = useRef(null);
     const noteEditorToolbarRef = useRef(null);
     const uploadHeadContent = useRef(null);
-
-
     const [currentPage, setCurrentPage] = useState(1);
-    const totalPages = 3;
-    const totalProducts = 12;
+    const [loading, setLoading] = useState(false);
+    const [totalProducts,setTotalProducts ]= useState(0);
+    const [resultsPerPage,setResultsPerPage] = useState(10); // Show 10 results per page
     const editorToolbarRef = useRef(null);
+    const [hotelType,setHotelType]=useState([]);
+    const [formdata,setFormData]=useState({hotelName : "",hotelType:-1,
+
+    });
+    const fetchHotelType = async () => {
+        setLoading(true);
+        try {
+            const data = await getRequest(GET_HOTEL_TYPE);
+            if (data.status === 200 && Array.isArray(data.response)) {
+                setHotelType(data.response); // Set the 'response' array to state
+            } else {
+                setHotelType([]);
+            }
+        } catch (error) {
+            console.error("Error fetching hotel type:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+    const fetchHotelData = async () => {
+        setLoading(true);
+        try {
+            const data = await getRequest(GET_HOTEL_DETAILS);
+            if (data.status === 200 && Array.isArray(data.response)) {
+                setHotelData(data.response); // Set the 'response' array to state
+                setTotalProducts(data.response.length);
+                setTotalPages(Math.ceil(data.response.length / resultsPerPage)); // Calculate total pages
+            } else {
+                console.error("Unexpected API response format:", data);
+                setHotelData([]);
+                setTotalPages(1);
+            }
+        } catch (error) {
+            console.error("Error fetching hotel data:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+    useEffect(() => {
+        fetchHotelData();
+        fetchHotelType();
+    }, []);
     const handleEditorChange = (event, editor) => {
         const data = editor.getData();
         console.log({ event, editor, data });
@@ -22,13 +67,15 @@ const Hoteldetails = () => {
             setCurrentPage(currentPage - 1);
         }
     };
-
     const handleNext = () => {
         if (currentPage < totalPages) {
             setCurrentPage(currentPage + 1);
         }
     };
-
+    const paginatedData = hotelData.slice(
+        (currentPage - 1) * resultsPerPage,
+        currentPage * resultsPerPage
+    );
     return (
         <div className="content-wrapper">
             <div className="row">
@@ -67,8 +114,8 @@ const Hoteldetails = () => {
                                     <div className="table-responsive packagelist">
                                         <table className="table table-bordered table-hover align-middle">
                                             <thead className="table-light">
-                                                <tr>
-                                                    <th>S.No.</th>
+                                                <tr >
+                                                    <th>S No.</th>
                                                     <th>Name</th>
                                                     <th>Hotel type</th>
                                                     <th>Country</th>
@@ -78,109 +125,28 @@ const Hoteldetails = () => {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr>
-                                                    <td>1</td>
-                                                    <td>ibis Styles Goa Calangute Resort An AccorHotels B</td>
-                                                    <td>3 Star</td>
-                                                    <th> India</th>
-                                                    <th>Goa</th>
-                                                    <th>Calangute</th>
+                                            {paginatedData.length > 0 ? (
+                                                paginatedData.map((hotel, index) => (
+                                                <tr key={index}>
+                                                    <td>{(currentPage - 1) * resultsPerPage + index + 1}</td>
+                                                    <td>{hotel.hotelName}</td>
+                                                    <td>{hotel.hotelType.hotelTypeName}</td>
+                                                    <td>{hotel.country.countryName}</td>
+                                                    <td>{hotel.state.stateName}</td>
+                                                    <td>{hotel.city.cityName}</td>
                                                     <td>
                                                         <button className="btn btn-sm btn-success me-2"><i className="mdi mdi-square-edit-outline"></i></button>
                                                         <button className="btn btn-sm btn-danger"><i className="mdi mdi-trash-can"></i></button>
                                                     </td>
                                                 </tr>
+                                                ))
+                                            ) : (
                                                 <tr>
-                                                    <td>2</td>
-                                                    <td>The Lalit Grand Palace Srinagar</td>
-                                                    <td>5 Star</td>
-                                                    <th> India</th>
-                                                    <th>Jammu and Kashmir</th>
-                                                    <th>Jammu</th>
-                                                    <td>
-                                                        <button className="btn btn-sm btn-success me-2"><i className="mdi mdi-square-edit-outline"></i></button>
-                                                        <button className="btn btn-sm btn-danger"><i className="mdi mdi-trash-can"></i></button>
+                                                    <td colSpan="7" className="text-center">
+                                                        No Data Available
                                                     </td>
                                                 </tr>
-                                                <tr>
-                                                    <td>3</td>
-                                                    <td>The dream garden</td>
-                                                    <td>3 Star</td>
-                                                    <th> India</th>
-                                                    <th>Krabi</th>
-                                                    <th>Krabi</th>
-                                                    <td>
-                                                        <button className="btn btn-sm btn-success me-2"><i className="mdi mdi-square-edit-outline"></i></button>
-                                                        <button className="btn btn-sm btn-danger"><i className="mdi mdi-trash-can"></i></button>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>4</td>
-                                                    <td>Courtyard Kochi Airport</td>
-                                                    <td>5 Star</td>
-                                                    <th> India</th>
-                                                    <th>Kerala</th>
-                                                    <th>Kochi</th>
-                                                    <td>
-                                                        <button className="btn btn-sm btn-success me-2"><i className="mdi mdi-square-edit-outline"></i></button>
-                                                        <button className="btn btn-sm btn-danger"><i className="mdi mdi-trash-can"></i></button>
-                                                    </td>
-                                                </tr> <tr>
-                                                    <td>5</td>
-                                                    <td>Crystal Goa Turquoise Edition</td>
-                                                    <td>3 Star</td>
-                                                    <th> India</th>
-                                                    <th>Goa</th>
-                                                    <th>Goa</th>
-                                                    <td>
-                                                        <button className="btn btn-sm btn-success me-2"><i className="mdi mdi-square-edit-outline"></i></button>
-                                                        <button className="btn btn-sm btn-danger"><i className="mdi mdi-trash-can"></i></button>
-                                                    </td>
-                                                </tr> <tr>
-                                                    <td>6</td>
-                                                    <td>MOSH by the shore</td>
-                                                    <td>5 Star</td>
-                                                    <th> India</th>
-                                                    <th>Goa</th>
-                                                    <th>Goa</th>
-                                                    <td>
-                                                        <button className="btn btn-sm btn-success me-2"><i className="mdi mdi-square-edit-outline"></i></button>
-                                                        <button className="btn btn-sm btn-danger"><i className="mdi mdi-trash-can"></i></button>
-                                                    </td>
-                                                </tr> <tr>
-                                                    <td>7</td>
-                                                    <td>Coorg Mandarin</td>
-                                                    <td>4 Star</td>
-                                                    <th> India</th>
-                                                    <th>Karnataka</th>
-                                                    <th>Madikeri</th>
-                                                    <td>
-                                                        <button className="btn btn-sm btn-success me-2"><i className="mdi mdi-square-edit-outline"></i></button>
-                                                        <button className="btn btn-sm btn-danger"><i className="mdi mdi-trash-can"></i></button>
-                                                    </td>
-                                                </tr> <tr>
-                                                    <td>8</td>
-                                                    <td>CAMPANILE VAL DE France</td>
-                                                    <td>3 Star</td>
-                                                    <th> India</th>
-                                                    <th>Paris</th>
-                                                    <th>Paris</th>
-                                                    <td>
-                                                        <button className="btn btn-sm btn-success me-2"><i className="mdi mdi-square-edit-outline"></i></button>
-                                                        <button className="btn btn-sm btn-danger"><i className="mdi mdi-trash-can"></i></button>
-                                                    </td>
-                                                </tr> <tr>
-                                                    <td>9</td>
-                                                    <td>Calangute, Goa, India</td>
-                                                    <td>3 Star</td>
-                                                    <th> India</th>
-                                                    <th>Goa</th>
-                                                    <th>Calangute</th>
-                                                    <td>
-                                                        <button className="btn btn-sm btn-success me-2"><i className="mdi mdi-square-edit-outline"></i></button>
-                                                        <button className="btn btn-sm btn-danger"><i className="mdi mdi-trash-can"></i></button>
-                                                    </td>
-                                                </tr>
+                                            )}
                                             </tbody>
                                         </table>
                                     </div>
@@ -229,14 +195,11 @@ const Hoteldetails = () => {
                                             <option value="" disabled selected>
                                                 Select Hotel Type
                                             </option>
-
-                                            <option value="3 Star">3 Star</option>
-                                            <option value="Standard"> Standard</option>
-                                            <option value="Deluxe"> Deluxe</option>
-                                            <option value="5 Star"> 5 Star</option>
-                                            <option value=""></option>
-                                            <option value=""></option>
-
+                                            {hotelType.map((hotel) => (
+                                                <option key={hotel.id} value={hotel.hotelTypeName}>
+                                                    {hotel.hotelTypeName}
+                                                </option>
+                                            ))}
                                         </select>
                                     </div>
                                     <div className="form-group col-md-6">

@@ -138,7 +138,7 @@ const Amenities = () => {
                                                 <tr>
                                                     <th>S.No.</th>
                                                     <th>Name</th>
-                                                    <th>Description</th>
+                                                    <th>Icon</th>
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>
