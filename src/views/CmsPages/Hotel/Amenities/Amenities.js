@@ -225,6 +225,19 @@ const Amenities = () => {
                                             placeholder="Only fa-icons accepted"
                                         />
                                     </div>
+                                    <div className="form-group col-md-12">
+                                        <label htmlFor="imagePicker">Icon Image</label>
+                                        <input
+                                            type="file"
+                                            className="form-control"
+                                            id="Icon Image"
+                                            accept="image/*"
+                                            placeholder="No image chosen"
+                                            onChange={(e) => {
+                                                const fileName = e.target.files[0]?.name || "No image chosen";
+                                            }}
+                                        />
+                                    </div>
                                     <div className="form-group col-md-12 d-flex justify-content-end">
                                         <button type="submit" className="btn btn-primary me-2">
                                             Submit

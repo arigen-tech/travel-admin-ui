@@ -126,7 +126,7 @@ const Facilities = () => {
                                     />
                                 </div>
                                 <div className="form-group col-md-12">
-                                    <label htmlFor="bannerText"></label>
+                                    <label htmlFor="bannerText">Icon Only fa icons are allowed</label>
                                     <textarea
                                         type="text"
                                         className="form-control"

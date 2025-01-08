@@ -118,7 +118,7 @@ const Mealplan = () => {
                                 </>
                             ) : (
                                 <form className="forms row">
-                                <div className="form-group col-md-4">
+                                <div className="form-group col-md-6">
                                     <label htmlFor="imagePicker">Icon</label>
                                     <input
                                         type="file"
