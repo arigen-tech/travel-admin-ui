@@ -10,7 +10,8 @@ const Login = () => {
     const handleLogin = async (event) => {
         event.preventDefault();
         // Add your login logic here
-        const loginResp = await postRequest(LOGIN, formData);
+        const response = await postRequest(LOGIN, formData);
+        const loginResp=response.response;
         debugger;
         if(loginResp.jwtToken){
             if(formData.rememberMe){
