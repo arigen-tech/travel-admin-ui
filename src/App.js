@@ -11,6 +11,11 @@ import Rooms from './views/CmsPages/Hotel/Rooms/Rooms';
 import Mealplan from './views/CmsPages/Hotel/Mealplan/Mealplan';
 import Facilities from './views/CmsPages/Hotel/Facilities/Facilities';
 import Similarhotel from './views/CmsPages/Hotel/SimilarHotel/Similarhotel';
+import Visadetails from './views/CmsPages/Visa/Visadetails/Visa';
+import Inclusions from './views/PackagePages/PackageMaster/Inclusion/Inclusions';
+import Exclusions from './views/PackagePages/PackageMaster/Exclusions/Exclusion';
+import Policy from './views/PackagePages/PackageMaster/Policy/Policy';
+import Tagcategory from './views/PackagePages/PackageMaster/TagCategory/Tagcategory';
 
 const Layout =  React.lazy(() => import('./views/layout/index'));
 const Dashboard = React.lazy(() => import('./views/Dashboard/index'));
@@ -47,7 +52,12 @@ function App() {
             <Route path="/mealPlan" element={<Mealplan/>} />
             <Route path="/facilities" element={<Facilities/>} />
             <Route path="Similarhotel" element={<Similarhotel/>} />
-
+            <Route path="/Visa" element={<Visadetails/>} />
+            <Route path="/Inclusions" element={<Inclusions/>} />
+            <Route path="/Exclusions" element={<Exclusions/>} />
+            <Route path="/Policy" element={<Policy/>} />
+            <Route path="/Tagcategory" element={<Tagcategory/>} />
+ 
 
           </Route>
         </Routes>
