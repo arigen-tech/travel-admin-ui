@@ -7,7 +7,7 @@ import Hoteldetails from './views/CmsPages/Hotel/Hotel details/index';
 import Amenities from './views/CmsPages/Hotel/Amenities/index';
 import RoomType from './views/CmsPages/Hotel/RoomType/index';
 import Hotelsettings from './views/CmsPages/Hotel/HotelSettings/index';
-import Rooms from './views/CmsPages/Hotel/Rooms/index';
+// import Rooms from './views/CmsPages/Hotel/Rooms/index';
 import Mealplan from './views/CmsPages/Hotel/Mealplan/index';
 import Facilities from './views/CmsPages/Hotel/Facilities/index';
 import Similarhotel from './views/CmsPages/Hotel/SimilarHotel/index';
@@ -49,7 +49,7 @@ function App() {
             <Route path="/Amenities" element={<Amenities/>} />
             <Route path="/RoomType" element={<RoomType/>} />
             <Route path="/Hotelsettings" element={<Hotelsettings/>} />
-            <Route path="/Rooms" element={<Rooms/>} />
+            {/*<Route path="/Rooms" element={<Rooms/>} />*/}
             <Route path="/mealPlan" element={<Mealplan/>} />
             <Route path="/facilities" element={<Facilities/>} />
             <Route path="Similarhotel" element={<Similarhotel/>} />
