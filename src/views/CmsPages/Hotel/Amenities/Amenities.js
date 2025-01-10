@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {getRequest} from "../../../../service/apiService";
+import {getRequest,uploadFileWithJson} from "../../../../service/apiService";
 import {AMENITIES} from "../../../../config/apiConfig";
 
 const Amenities = () => {
@@ -7,17 +7,14 @@ const Amenities = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [editAmenity, setEditAmenity] = useState(null);
     const [amenityData, setAmenityData] = useState([]);
-    // const [amenities, setAmenities] = useState([
-    //     { id: 1, name: "Wifi", icon: "" },
-    //     { id: 2, name: "Bathroom", icon: "" },
-    //     { id: 3, name: "Swimming Pool", icon: "" },
-    //     { id: 4, name: "Spa", icon: "" },
-    //     { id: 5, name: "WheelChair", icon: "" },
-    // ]);
     const [loading, setLoading] = useState(false);
     const [totalPages, setTotalPages] = useState(1);
     const resultsPerPage = 10;
-
+    const [formData, setFormData] = useState({
+        name: editAmenity ? editAmenity.name : "",
+        icon: editAmenity ? editAmenity.icon : "",
+        image: null,
+    });
     const paginatedAmenities = amenityData.slice(
         (currentPage - 1) * resultsPerPage,
         currentPage * resultsPerPage
@@ -93,6 +90,53 @@ const Amenities = () => {
         setEditAmenity(amenity);
         setShowForm(true);
     };
+    const handleCreateFormSubmit = async (e) => {
+        e.preventDefault();
+
+        const form = new FormData();
+        form.append("json", JSON.stringify({
+            name: formData.name,
+            icon: formData.icon,
+        }));
+
+        if (formData.image) {
+            form.append("files", formData.image);
+        }
+        debugger;
+        let json={
+            "amenityName":formData.name,
+            "description":formData.icon,
+        }
+
+        try {
+            const response = uploadFileWithJson(AMENITIES,json,formData.image);
+            debugger;
+                // await fetch("http://localhost:8080/api/upload", {
+        //         method: "POST",
+        //         body: form,
+        //     });
+        //
+        //     if (response.ok) {
+        //         console.log("Upload successful");
+        //         // Handle successful response
+        //     } else {
+        //         console.error("Upload failed");
+        //         // Handle error
+        //     }
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    };
+
+    // Handle file input change
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        setFormData({
+            ...formData,
+            image: file,
+        });
+    };
+
 
     return (
         <div className="content-wrapper">
@@ -203,58 +247,111 @@ const Amenities = () => {
                             )
                             
                              : (
-                                <form className="forms row" onSubmit={handleFormSubmit}>
-                                    <div className="form-group col-md-12">
-                                        <label>Amenities Details</label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            name="name"
-                                            defaultValue={editAmenity ? editAmenity.name : ""}
-                                            placeholder="Enter Amenity Name"
-                                            required
-                                        />
-                                    </div>
-                                    <div className="form-group col-md-12">
-                                        <label>Icons</label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            name="icon"
-                                            defaultValue={editAmenity ? editAmenity.icon : ""}
-                                            placeholder="Only fa-icons accepted"
-                                        />
-                                    </div>
-                                    <div className="form-group col-md-12">
-                                        <label htmlFor="imagePicker">Icon Image</label>
-                                        <input
-                                            type="file"
-                                            className="form-control"
-                                            id="Icon Image"
-                                            accept="image/*"
-                                            placeholder="No image chosen"
-                                            onChange={(e) => {
-                                                const fileName = e.target.files[0]?.name || "No image chosen";
-                                            }}
-                                        />
-                                    </div>
-                                    <div className="form-group col-md-12 d-flex justify-content-end">
-                                        <button type="submit" className="btn btn-primary me-2">
-                                            Submit
-                                        </button>
-                                        <button
-                                            type="button"
-                                            className="btn btn-danger"
-                                            onClick={() => {
-                                                setShowForm(false);
-                                                setEditAmenity(null);
-                                            }}
-                                        >
-                                            Cancel
-                                        </button>
-                                    </div>
-                                </form>
-                            )}
+                                    // <form className="forms row" onSubmit={handleFormSubmit}>
+                                    //     <div className="form-group col-md-12">
+                                    //         <label>Amenities Details</label>
+                                    //         <input
+                                    //             type="text"
+                                    //             className="form-control"
+                                    //             name="name"
+                                    //             defaultValue={editAmenity ? editAmenity.name : ""}
+                                    //             placeholder="Enter Amenity Name"
+                                    //             required
+                                    //         />
+                                    //     </div>
+                                    //     <div className="form-group col-md-12">
+                                    //         <label>Icons</label>
+                                    //         <input
+                                    //             type="text"
+                                    //             className="form-control"
+                                    //             name="icon"
+                                    //             defaultValue={editAmenity ? editAmenity.icon : ""}
+                                    //             placeholder="Only fa-icons accepted"
+                                    //         />
+                                    //     </div>
+                                    //     <div className="form-group col-md-12">
+                                    //         <label htmlFor="imagePicker">Icon Image</label>
+                                    //         <input
+                                    //             type="file"
+                                    //             className="form-control"
+                                    //             id="Icon Image"
+                                    //             accept="image/*"
+                                    //             placeholder="No image chosen"
+                                    //             onChange={(e) => {
+                                    //                 const fileName = e.target.files[0]?.name || "No image chosen";
+                                    //             }}
+                                    //         />
+                                    //     </div>
+                                    //     <div className="form-group col-md-12 d-flex justify-content-end">
+                                    //         <button type="submit" className="btn btn-primary me-2">
+                                    //             Submit
+                                    //         </button>
+                                    //         <button
+                                    //             type="button"
+                                    //             className="btn btn-danger"
+                                    //             onClick={() => {
+                                    //                 setShowForm(false);
+                                    //                 setEditAmenity(null);
+                                    //             }}
+                                    //         >
+                                    //             Cancel
+                                    //         </button>
+                                    //     </div>
+                                    // </form>
+                                    <form className="forms row" onSubmit={handleCreateFormSubmit}>
+                                        <div className="form-group col-md-12">
+                                            <label>Amenities Details</label>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                name="name"
+                                                value={formData.name}
+                                                onChange={(e) =>
+                                                    setFormData({...formData, name: e.target.value})
+                                                }
+                                                placeholder="Enter Amenity Name"
+                                                required
+                                            />
+                                        </div>
+                                        <div className="form-group col-md-12">
+                                            <label>Icons</label>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                name="icon"
+                                                value={formData.icon}
+                                                onChange={(e) =>
+                                                    setFormData({...formData, icon: e.target.value})
+                                                }
+                                                placeholder="Only fa-icons accepted"
+                                            />
+                                        </div>
+                                        <div className="form-group col-md-12">
+                                            <label htmlFor="imagePicker">Icon Image</label>
+                                            <input
+                                                type="file"
+                                                className="form-control"
+                                                accept="image/*"
+                                                onChange={handleFileChange}
+                                            />
+                                        </div>
+                                        <div className="form-group col-md-12 d-flex justify-content-end">
+                                            <button type="submit" className="btn btn-primary me-2">
+                                                Submit
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className="btn btn-danger"
+                                                onClick={() => {
+                                                    setShowForm(false);
+                                                    setEditAmenity(null);
+                                                }}
+                                            >
+                                                Cancel
+                                            </button>
+                                        </div>
+                                    </form>
+                                )}
                         </div>
                     </div>
                 </div>

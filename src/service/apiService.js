@@ -102,3 +102,43 @@ export const putRequest = async (endpoint, data, headers = {}) => {
         throw error;
     }
 };
+// uploadService.js
+async function uploadFileWithJson(endpoint, jsonData, file) {
+    if (!file || file.length === 0) {
+        throw new Error("No files provided!");
+    }
+    let token;
+    if(localStorage.token){
+        token={"Authorization":`Bearer ${localStorage.getItem('token')}`};
+    }
+    else {
+        token = {"Authorization": `Bearer ${sessionStorage.getItem('token')}`};
+    }
+    // Create FormData object
+    const formData = new FormData();
+    formData.append("json", new Blob([JSON.stringify(jsonData)], { type: "application/json" }));
+    formData.append(`files`, file); // Using "files" as the key
+
+    try {
+        // Send POST request using fetch
+        const response = await fetch(`${BASE_URL}${endpoint}`, {
+            method: "POST",
+            headers: {
+                ...token, // Merge the headers passed as argument with any default headers
+            },
+            body: formData,
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        // Parse and return the response JSON
+        return await response.json();
+    } catch (error) {
+        console.error("Error during file upload:", error.message);
+        throw error; // Rethrow the error for caller to handle
+    }
+}
+
+export { uploadFileWithJson };
