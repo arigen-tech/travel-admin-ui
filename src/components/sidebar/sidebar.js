@@ -60,10 +60,16 @@ const Sidebar = () => {
                   <li className="nav-item"><Link className="nav-link" href="#">Banner</Link></li>
                   <li className="nav-item"><Link className="nav-link" href="#">Destination</Link></li>
                   <li className="nav-item"><Link className="nav-link" href="#">Offers</Link></li>
-                  <li className="nav-item"><Link className="nav-link" href="#">Tag</Link></li>
+                  <li className={`nav-item ${isActive('Tag') ? 'active' : ''}`}><Link className="nav-link" to="/Tag">Tag</Link></li>
+
+
+
                   <li className="nav-item"><Link className="nav-link" href="#">Blogs</Link></li>
                   <li className="nav-item"><Link className="nav-link" href="#">Testimonial</Link></li>
+
                   <li className="nav-item"><Link className="nav-link" href="#">Add Page</Link></li>
+
+
                   <li className="nav-item"><Link className="nav-link" href="#">Manage Services</Link></li>
                   <li className="nav-item"><Link className="nav-link" href="#">Manage About Us</Link></li>
                   <li className="nav-item"><Link className="nav-link" href="#">Manage Contact Us</Link></li>
@@ -135,7 +141,7 @@ const Sidebar = () => {
               </a>
               <div className="collapse" id="visa">
                 <ul className="nav flex-column sub-menu">
-                  <li className={`nav-item ${isActive('Visa') ? 'active' : ''}`}><Link className="nav-link" to="/Visa">Visa</Link></li>
+                  <li className="nav-item"><Link className="nav-link" href="#">Visa </Link></li>
 
                   <li className="nav-item"><Link className="nav-link" href="#">Visa Type</Link></li>
                   <li className="nav-item"><Link className="nav-link" href="#">Enter Type</Link></li>
@@ -245,22 +251,26 @@ const Sidebar = () => {
             <li className="nav-item nav-category">
               <span className="nav-link">Package Master</span>
             </li>
-            <li className="nav-item menu-items">
+
+
+
+
+            <li className={`nav-item menu-items ${isActive('TagCategory') ? 'active' : ''}`}>
               <Link to="/TagCategory" className="nav-link">
                 <span className="menu-icon">
                   <i className="mdi mdi-tag-multiple" />
                 </span>
-                <span className="menu-title">Tag Category</span>
+                <span className="nav-item">Tag Category</span>
               </Link>
             </li>
 
 
 
-         
+
 
             <li className={`nav-item menu-items ${isActive('Inclusions') ? 'active' : ''}`}>
               <Link to="/Inclusions" className="nav-link">
-              <span className="menu-icon">
+                <span className="menu-icon">
                   <i className="mdi mdi-email" />
                 </span>
                 <span className="nav-item">Inclusions</span>
@@ -269,11 +279,11 @@ const Sidebar = () => {
 
 
 
-            
+
 
             <li className={`nav-item menu-items ${isActive('Policy') ? 'active' : ''}`}>
               <Link to="/Policy" className="nav-link">
-              <span className="menu-icon">
+                <span className="menu-icon">
                   <i className="mdi mdi-email" />
                 </span>
                 <span className="nav-item">Policy</span>
@@ -281,15 +291,17 @@ const Sidebar = () => {
             </li>
 
 
-            <li className="nav-item menu-items">
+            
+
+            <li className={`nav-item menu-items ${isActive('TagWisePackage') ? 'active' : ''}`}>
               <Link to="/TagWisePackage" className="nav-link">
-                <span className="menu-icon">
+              <span className="menu-icon">
                   <i className="mdi mdi-label" />
                 </span>
-                <span className="menu-title">Tag Wise Package</span>
+                <span className="nav-item">Tag Wise Package</span>
               </Link>
             </li>
-           
+
 
             <li className={`nav-item menu-items ${isActive('Exclusions') ? 'active' : ''}`}>
               <Link to="/Exclusions" className="nav-link">

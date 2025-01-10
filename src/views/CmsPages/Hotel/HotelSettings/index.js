@@ -69,6 +69,8 @@ const Hotelsettings = () => {
                                         id="bannerText"
                                         placeholder="Hotels"
                                         rows="4"
+                                        style={{ height: '100px' }}
+
                                     />
                                 </div>
 
@@ -87,6 +89,7 @@ const Hotelsettings = () => {
                                         className="form-control"
                                         id="International Hotels"
                                         placeholder="International Hotels"
+                                        style={{ height: '40px' }}
                                     />
                                 </div>
                                 <div className="form-group col-md-4">
@@ -119,6 +122,8 @@ const Hotelsettings = () => {
                                         id="bannerText"
                                         placeholder="Hotels"
                                         rows="4"
+                                        style={{ height: '100px' }}
+
                                     />
                                 </div>
 

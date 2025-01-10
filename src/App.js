@@ -3,19 +3,20 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle';
 import { MenuProvider } from './context/MenuContext';
-import Hoteldetails from './views/CmsPages/Hotel/Hotel details/Hoteldetails';
-import Amenities from './views/CmsPages/Hotel/Amenities/Amenities';
-import RoomType from './views/CmsPages/Hotel/RoomType/Roomtype';
-import Hotelsettings from './views/CmsPages/Hotel/HotelSettings/Hotelsettings';
-import Rooms from './views/CmsPages/Hotel/Rooms/Rooms';
-import Mealplan from './views/CmsPages/Hotel/Mealplan/Mealplan';
-import Facilities from './views/CmsPages/Hotel/Facilities/Facilities';
-import Similarhotel from './views/CmsPages/Hotel/SimilarHotel/Similarhotel';
-import Visadetails from './views/CmsPages/Visa/Visadetails/Visa';
-import Inclusions from './views/PackagePages/PackageMaster/Inclusion/Inclusions';
-import Exclusions from './views/PackagePages/PackageMaster/Exclusions/Exclusion';
-import Policy from './views/PackagePages/PackageMaster/Policy/Policy';
-import Tagcategory from './views/PackagePages/PackageMaster/TagCategory/Tagcategory';
+import Hoteldetails from './views/CmsPages/Hotel/Hotel details/index';
+import Amenities from './views/CmsPages/Hotel/Amenities/index';
+import RoomType from './views/CmsPages/Hotel/RoomType/index';
+import Hotelsettings from './views/CmsPages/Hotel/HotelSettings/index';
+import Rooms from './views/CmsPages/Hotel/Rooms/index';
+import Mealplan from './views/CmsPages/Hotel/Mealplan/index';
+import Facilities from './views/CmsPages/Hotel/Facilities/index';
+import Similarhotel from './views/CmsPages/Hotel/SimilarHotel/index';
+import Inclusions from './views/PackagePages/PackageMaster/Inclusion/index';
+import Exclusions from './views/PackagePages/PackageMaster/Exclusions/index';
+import Policy from './views/PackagePages/PackageMaster/Policy/index';
+import Tagcategory from './views/PackagePages/PackageMaster/TagCategory/index';
+import Tag from './views/CmsPages/Home/Tag/index';
+import Tagwisepackage from './views/PackagePages/PackageMaster/TagWisePackage/index';
 
 const Layout =  React.lazy(() => import('./views/layout/index'));
 const Dashboard = React.lazy(() => import('./views/Dashboard/index'));
@@ -52,11 +53,14 @@ function App() {
             <Route path="/mealPlan" element={<Mealplan/>} />
             <Route path="/facilities" element={<Facilities/>} />
             <Route path="Similarhotel" element={<Similarhotel/>} />
-            <Route path="/Visa" element={<Visadetails/>} />
             <Route path="/Inclusions" element={<Inclusions/>} />
             <Route path="/Exclusions" element={<Exclusions/>} />
             <Route path="/Policy" element={<Policy/>} />
             <Route path="/Tagcategory" element={<Tagcategory/>} />
+            <Route path="/Tag" element={<Tag/>} />
+            <Route path="/Tagwisepackage" element={<Tagwisepackage/>} />
+
+            
  
 
           </Route>
