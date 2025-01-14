@@ -13,7 +13,11 @@ const Package = () => {
     const [showMultiStep, setShowMultiStep] = useState(false);
     const totalPages = 3;
     const totalProducts = 12;
+    const [isActive, setIsActive] = useState(true);
 
+    const handleSwitchChange = (e) => {
+        setIsActive(e.target.checked);
+    };
     const handlePrevious = () => {
         if (currentPage > 1) {
             setCurrentPage(currentPage - 1);
@@ -35,7 +39,22 @@ const Package = () => {
                             <h4 className="card-title">Add New Package</h4>
                             <div>
                                 {!showMultiStep ? (
-                                    <>
+                                    <div className="d-flex align-items-center">
+                                        <form class="d-inline-block serachform" role="search">
+                                            <div class="input-group searchinput">
+                                                <input 
+                                                type="search" 
+                                                class="form-control" 
+                                                placeholder="Search" 
+                                                aria-label="Search" 
+                                                aria-describedby="search-icon" 
+                                                />
+                                                <span class="input-group-text" id="search-icon">
+                                                <i class="mdi mdi-magnify"></i>
+                                                </span>
+                                            </div>
+
+                                        </form>
                                         <button
                                             type="button"
                                             className="btn btn-success me-2"
@@ -49,7 +68,7 @@ const Package = () => {
                                         <button type="button" className="btn btn-info">
                                             <i className="mdi mdi-filter"></i> Filter
                                         </button>
-                                    </>
+                                    </div>
                                 ) : (
                                     <button
                                         type="button"
@@ -75,6 +94,7 @@ const Package = () => {
                                                 <th>Valid From</th>
                                                 <th>Valid To</th>
                                                 <th>Action</th>
+                                                <th>Status</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -87,6 +107,19 @@ const Package = () => {
                                             <td>31-Dec-2024</td>
                                             <td>
                                                 <button className="btn btn-sm btn-outline-secondary">...</button>
+                                            </td>
+                                            <td>
+                                            <div className="form-check form-switch">
+                                                <input
+                                                    className="form-check-input"
+                                                    type="checkbox"
+                                                    checked={isActive}
+                                                    onChange={handleSwitchChange}
+                                                />
+                                                <label className="form-check-label px-0">
+                                                    {isActive ? 'Active' : 'Deactivated'}
+                                                </label>
+                                            </div>
                                             </td>
                                         </tr>
                                         <tr>

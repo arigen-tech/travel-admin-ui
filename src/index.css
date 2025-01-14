@@ -282,6 +282,14 @@ textarea {
   background-color: rgb(255, 101, 37) !important;
   border-color: var(--bs-white)!important;
 }
+.searchinput input, .searchinput span{
+  height: 33px;
+}
+.serachform{
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 8px;
+}
 @media (max-width: 768px) {
   .go169520481  {
       flex-direction: row;
