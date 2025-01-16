@@ -132,7 +132,7 @@ const Inclusions = () => {
   const confirmStatusChange = async (e) => {
     e.preventDefault();
     try {
-      const status = newStatus ? "1" : "0";
+      const status = newStatus ? "y" : "n";
       const response = await putRequest(
         `${INCLUSION}/status/${selectedItem}?status=${status}`
       );
@@ -217,20 +217,15 @@ const Inclusions = () => {
                               <td>{index + 1}</td>
                               <td>{item.inclusionName}</td>
                               <td>{item.inclusionDesc}</td>
+
                               <td>
                                 <button
                                   className={`btn btn-sm btn-success me-2 ${
-                                    item.status === "0" ? "disabled" : ""
+                                    item.status === "n" ? "disabled" : ""
                                   }`}
-                                  disabled={item.status === "0"}
-                                  style={{
-                                    cursor:
-                                      item.status === "0"
-                                        ? "not-allowed"
-                                        : "pointer",
-                                  }} // Set cursor style
+                                  disabled={item.status === "n"}
                                   onClick={() => {
-                                    if (item.status === "1") {
+                                    if (item.status === "y") {
                                       handleEdit(item);
                                     }
                                   }}
@@ -244,16 +239,16 @@ const Inclusions = () => {
                                   <input
                                     className="form-check-input"
                                     type="checkbox"
-                                    checked={item.status === "1"}
+                                    checked={item.status === "y"}
                                     onChange={() =>
                                       handleStatusChange(
                                         item.id,
-                                        item.status !== "1"
+                                        item.status !== "y"
                                       )
                                     }
                                   />
                                   <label className="form-check-label px-0">
-                                    {item.status === "1"
+                                    {item.status === "y"
                                       ? "Active"
                                       : "Deactivated"}
                                   </label>
@@ -345,7 +340,9 @@ const Inclusions = () => {
                       </div>
 
                       <div className="form-group col-md-12">
-                        <label htmlFor="inclusion-editor">Inclusions</label>
+                        <label htmlFor="inclusion-editor">
+                          Inclusions Description
+                        </label>
                         <div ref={inclusionRef}></div>
                         <CKEditor
                           editor={DecoupledEditor}
@@ -415,30 +412,28 @@ const Inclusions = () => {
 
       {showConfirmation && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <form
-            className="bg-white p-6 rounded-lg shadow-md"
-            onSubmit={confirmStatusChange}
-          >
-            <p className="text-lg mb-4">
+          <div className="bg-white p-6 rounded-lg shadow-md w-1/3">
+            <p className="text-lg mb-4 text-center">
               Are you sure you want to {newStatus ? "activate" : "deactivate"}{" "}
               this inclusion?
             </p>
-            <div className="flex justify-end space-x-4">
+            <div className="flex justify-center space-x-4">
               <button
                 type="button"
-                className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition"
                 onClick={() => setShowConfirmation(false)}
               >
                 Cancel
               </button>
               <button
-                type="submit"
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                type="button"
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+                onClick={confirmStatusChange}
               >
                 Confirm
               </button>
             </div>
-          </form>
+          </div>
         </div>
       )}
     </div>
