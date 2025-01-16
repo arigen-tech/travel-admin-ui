@@ -228,20 +228,7 @@ const Tag = () => {
                                         />
                                     </div>
 
-                                    <div className="form-group col-md-6">
-                                        <label htmlFor="Category">Select Category</label>
-                                        <select
-                                            className="form-control"
-                                            id="Category"
-                                            onChange={(e) => console.log(e.target.value)}
-                                        >
-                                            <option value="" disabled selected>
-                                                Select Category
-                                            </option>
-
-                                        </select>
-                                    </div>
-
+                                   
                                     <div className="form-group col-md-12">
                                         <div ref={tagRef}></div>
                                         <CKEditor
