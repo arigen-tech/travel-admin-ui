@@ -7,6 +7,7 @@ import {
   putRequest,
 } from "../../../../service/apiService";
 import { INCLUSION } from "../../../../config/apiConfig";
+import Popup from "../../../../components/popup";
 
 const Inclusions = () => {
   const [formData, setFormData] = useState({
@@ -14,6 +15,8 @@ const Inclusions = () => {
     inclusionDesc: "",
   });
   const [editMode, setEditMode] = useState(false);
+  const [popup, setPopup] = useState("");
+  const [popupMessage, setPopupMessage] = useState("");
   const [editId, setEditId] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -54,6 +57,17 @@ const Inclusions = () => {
     fetchInclusionData();
   }, []);
 
+  const showPopup = (message, type = "info") => {
+    setPopupMessage({
+      message,
+      type,
+      onClose: () => {
+        setPopupMessage(null);
+        window.location.reload();
+      },
+    });
+  };
+
   const handleCreateFormSubmit = async (e) => {
     e.preventDefault();
 
@@ -67,16 +81,26 @@ const Inclusions = () => {
         const response = await postRequest(INCLUSION, newInclusionType);
 
         if (response.status === 200) {
-          alert("Inclusion added successfully!");
+          showPopup(
+            response.message || "Inclusion added successfully!",
+            "success"
+          );
           setFormData({ inclusionName: "", inclusionDesc: "" });
           setShowForm(false);
           fetchInclusionData();
         } else {
-          alert("Failed to add inclusion. Please try again.");
+          showPopup(
+            response.message || "Failed to add inclusion. Please try again.",
+            "error"
+          );
         }
       } catch (error) {
         console.error("Error adding inclusion:", error);
-        alert("An error occurred while adding the inclusion.");
+        showPopup(
+          error.response?.message ||
+            "An error occurred while adding the inclusion.",
+          "error"
+        );
       }
     } else {
       alert("Please fill out all required fields.");
@@ -102,24 +126,32 @@ const Inclusions = () => {
     setEditMode(true);
     setShowForm(true);
   };
-
   const handleUpdateFormSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await putRequest(`${INCLUSION}/${editId}`, formData);
       if (response.status === 200) {
-        alert("Inclusion updated successfully!");
+        showPopup(
+          response?.message || "Inclusion updated successfully!",
+          "success"
+        );
         fetchInclusionData();
         setShowForm(false);
         setEditMode(false);
         setEditId(null);
         setFormData({ inclusionName: "", inclusionDesc: "" });
       } else {
-        alert("Failed to update inclusion. Please try again.");
+        showPopup(
+          response?.message || "Failed to update inclusion. Please try again.",
+          "error"
+        );
       }
     } catch (error) {
       console.error("Error updating inclusion:", error);
-      alert("An error occurred while updating the inclusion.");
+      showPopup(
+        error?.response?.message || "An error occurred while updating the inclusion.",
+        "error"
+      );
     }
   };
 
@@ -138,17 +170,23 @@ const Inclusions = () => {
       );
 
       if (response.status === 200) {
-        alert("Status updated successfully!");
+        showPopup(response.message || "Status updated successfully!", "success");
         fetchInclusionData();
         setShowConfirmation(false);
         setSelectedItem(null);
         setNewStatus(false);
       } else {
-        alert("Failed to update status. Please try again.");
+        showPopup(
+          response?.message || "Failed to update status. Please try again.",
+          "error"
+        );
       }
     } catch (error) {
       console.error("Error updating status:", error);
-      alert("An error occurred while updating the status.");
+      showPopup(
+        error?.response?.message || "An error occurred while updating the status.",
+        "error"
+      );
     }
   };
 
@@ -168,8 +206,16 @@ const Inclusions = () => {
     <div className="content-wrapper">
       <div className="row">
         <div className="col-12 grid-margin stretch-card">
+          {popupMessage && (
+            <Popup
+              message={popupMessage.message}
+              type={popupMessage.type}
+              onClose={popupMessage.onClose}
+            />
+          )}
           <div className="card form-card">
             <div className="card-header d-flex justify-content-between align-items-center">
+              
               <h4 className="card-title">Inclusions</h4>
               <div>
                 {!showForm ? (
@@ -325,6 +371,7 @@ const Inclusions = () => {
                         <label htmlFor="inclusionName">Inclusion Name</label>
                         <input
                           type="text"
+                          required
                           className="form-control"
                           id="inclusionName"
                           placeholder="Inclusion Name"
@@ -335,7 +382,6 @@ const Inclusions = () => {
                             }))
                           }
                           value={formData.inclusionName}
-                          required
                         />
                       </div>
 
@@ -411,27 +457,34 @@ const Inclusions = () => {
       </div>
 
       {showConfirmation && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-6 rounded-lg shadow-md w-1/3">
-            <p className="text-lg mb-4 text-center">
-              Are you sure you want to {newStatus ? "activate" : "deactivate"}{" "}
-              this inclusion?
-            </p>
-            <div className="flex justify-center space-x-4">
-              <button
-                type="button"
-                className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition"
-                onClick={() => setShowConfirmation(false)}
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
-                onClick={confirmStatusChange}
-              >
-                Confirm
-              </button>
+        <div className="modal d-block" tabIndex="-1" role="dialog">
+          <div className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Confirm Status Change</h5>
+              </div>
+              <div className="modal-body">
+                <p className="text-lg mb-4 text-center">
+                  Are you sure you want to{" "}
+                  {newStatus ? "activate" : "deactivate"} this inclusion?
+                </p>
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => setShowConfirmation(false)}
+                >
+                  No
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={confirmStatusChange}
+                >
+                  Yes
+                </button>
+              </div>
             </div>
           </div>
         </div>
