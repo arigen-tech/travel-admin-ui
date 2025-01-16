@@ -9,6 +9,7 @@ export const UPDATE_HOTEL_TYPE=`/masterController/updateHotelType`;
 export const AMENITIES='/masterController/hotel-amenities';
 export const TAGCATEGORY='/masterController/tagCategory';
 export const INCLUSION='/masterController/inclusion';
+export const EXCLUSION='/masterController/exclusion';
 
 export const LOGIN='/authController/login';
 
