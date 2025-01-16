@@ -3,8 +3,7 @@ import Popup from "../../../../components/popup";
 
 const RoomType = () => {
     const [showForm, setShowForm] = useState(false);
-    const [popup, setPopup] = useState("");
-    const [popupMessage, setPopupMessage] = useState("");
+    const [popupMessage, setPopupMessage] = useState(null);
 
     const [currentPage, setCurrentPage] = useState(1);
     const totalPages = 3;
@@ -16,6 +15,11 @@ const RoomType = () => {
     ]);
     const [editingRoom, setEditingRoom] = useState(null);
     const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, roomId: null, newStatus: false });
+    const [nameInput, setNameInput] = useState(editingRoom?.name || '');
+
+    const handleNameChange = (e) => {
+        setNameInput(e.target.value);
+    };
 
     const handlePrevious = () => {
         if (currentPage > 1) {
@@ -29,11 +33,9 @@ const RoomType = () => {
             type,
             onClose: () => {
                 setPopupMessage(null);
-                window.location.reload();
             }
         });
     };
-    
 
     const handleNext = () => {
         if (currentPage < totalPages) {
@@ -52,16 +54,17 @@ const RoomType = () => {
         const newName = formData.get('name');
 
         if (editingRoom) {
-            setRoomTypes(roomTypes.map(roomTypes =>
-                roomTypes.id === editingRoom.id ? { ...roomTypes, name: newName } : roomTypes
+            setRoomTypes(prevRoomTypes => prevRoomTypes.map(roomType =>
+                roomType.id === editingRoom.id ? { ...roomType, name: newName } : roomType
             ));
             showPopup('Room type updated successfully!', "success");
         } else {
-            setRoomTypes([...roomTypes, {
-                id: roomTypes.length + 1,
-                name: newName
+            setRoomTypes(prevRoomTypes => [...prevRoomTypes, {
+                id: prevRoomTypes.length + 1,
+                name: newName,
+                isActive: true
             }]);
-            alert('Room type added successfully!');
+            showPopup('Room type added successfully!', "success");
         }
 
         setShowForm(false);
@@ -105,25 +108,24 @@ const RoomType = () => {
                             <div>
                                 {!showForm ? (
                                     <>
-                                        <form class="d-inline-block serachform" role="search">
-                                            <div class="input-group searchinput">
+                                        <form className="d-inline-block serachform" role="search">
+                                            <div className="input-group searchinput">
                                                 <input
                                                     type="search"
-                                                    class="form-control"
+                                                    className="form-control"
                                                     placeholder="Search"
                                                     aria-label="Search"
                                                     aria-describedby="search-icon"
                                                 />
-                                                <span class="input-group-text" id="search-icon">
-                                                    <i class="mdi mdi-magnify"></i>
+                                                <span className="input-group-text" id="search-icon">
+                                                    <i className="mdi mdi-magnify"></i>
                                                 </span>
                                             </div>
-
                                         </form>
                                         <button
                                             type="button"
                                             className="btn btn-success me-2"
-                                            onClick={() => setShowForm(true)} // Show  form
+                                            onClick={() => setShowForm(true)}
                                         >
                                             <i className="mdi mdi-plus"></i> Create
                                         </button>
@@ -135,7 +137,7 @@ const RoomType = () => {
                                     <button
                                         type="button"
                                         className="btn btn-secondary"
-                                        onClick={() => setShowForm(false)} // Show  form
+                                        onClick={() => setShowForm(false)}
                                     >
                                         <i className="mdi mdi-arrow-left"></i> Back
                                     </button>
@@ -150,10 +152,9 @@ const RoomType = () => {
                                             <thead className="table-light">
                                                 <tr>
                                                     <th>S.No.</th>
-                                                    <th> Name</th>
+                                                    <th>Name</th>
                                                     <th>Edit</th>
                                                     <th>Status</th>
-
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -169,7 +170,6 @@ const RoomType = () => {
                                                             >
                                                                 <i className="mdi mdi-square-edit-outline"></i>
                                                             </button>
-
                                                         </td>
                                                         <td>
                                                             <div className="form-check form-switch">
@@ -225,20 +225,25 @@ const RoomType = () => {
                             ) : (
                                 <form className="forms row" onSubmit={handleSubmit}>
                                     <div className="form-group col-md-12">
-                                        <label>Name(max-50)</label>
+                                        <label>Name(max-50) <span className="text-danger">*</span></label>
                                         <input
                                             type="text"
                                             className="form-control"
                                             id="name"
                                             name="name"
                                             placeholder="Room type"
+                                            required
                                             defaultValue={editingRoom?.name || ''}
+                                            value={nameInput}
+                                            onChange={handleNameChange}
                                         />
                                     </div>
 
                                     <div className="form-group col-md-12 d-flex justify-content-end">
-                                        <button type="submit" className="btn btn-primary me-2">
+                                        <button type="submit" className="btn btn-primary me-2" disabled={!nameInput.trim()}>
+                                            
                                             {editingRoom ? 'Update' : 'Submit'}
+                                            
                                         </button>
                                         <button
                                             type="button"
