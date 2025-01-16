@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
+import DecoupledEditor from "@ckeditor/ckeditor5-build-decoupled-document";
 import {
   getRequest,
   postRequest,
@@ -7,46 +8,40 @@ import {
 } from "../../../../service/apiService";
 import { EXCLUSION } from "../../../../config/apiConfig";
 import Popup from "../../../../components/popup";
-import DecoupledEditor from "@ckeditor/ckeditor5-build-decoupled-document";
+
 const Exclusions = () => {
   const [formData, setFormData] = useState({
     exclusionName: "",
     exclusionDescription: "",
   });
   const [editMode, setEditMode] = useState(false);
-  const [popup, setPopup] = useState("");
-  const [popupMessage, setPopupMessage] = useState("");
+  const [popupMessage, setPopupMessage] = useState(null);
   const [editId, setEditId] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [exclusionData, setExclusionData] = useState([]);
-  const [totalPages, setTotalPages] = useState(1);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [newStatus, setNewStatus] = useState(false);
-  const totalProducts = exclusionData?.length;
+  const [searchTerm, setSearchTerm] = useState("");
   const exclusionRef = useRef(null);
   const editorRef = useRef(null);
-  const resultsPerPage = 10;
+  const resultsPerPage = 3;
 
   const fetchExclusionData = async () => {
     setLoading(true);
-
     const GETALL = "/masterController/getAllExclusions";
-
     try {
       const data = await getRequest(GETALL);
       if (data.status === 200 && Array.isArray(data.response)) {
         setExclusionData(data.response);
-        setTotalPages(Math.ceil(data.response.length / resultsPerPage));
       } else {
         console.error("Unexpected API response format:", data);
         setExclusionData([]);
-        setTotalPages(1);
       }
     } catch (error) {
-      console.error("Error fetching tagCatyegory data:", error);
+      console.error("Error fetching exclusion data:", error);
     } finally {
       setLoading(false);
     }
@@ -55,6 +50,10 @@ const Exclusions = () => {
   useEffect(() => {
     fetchExclusionData();
   }, []);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
 
   const showPopup = (message, type = "info") => {
     setPopupMessage({
@@ -69,16 +68,9 @@ const Exclusions = () => {
 
   const handleCreateFormSubmit = async (e) => {
     e.preventDefault();
-
     if (formData.exclusionName && formData.exclusionDescription) {
-      const newInclusionType = {
-        exclusionName: formData.exclusionName,
-        exclusionDescription: formData.exclusionDescription,
-      };
-
       try {
-        const response = await postRequest(EXCLUSION, newInclusionType);
-
+        const response = await postRequest(EXCLUSION, formData);
         if (response.status === 200) {
           showPopup(
             response.message || "Exclusion added successfully!",
@@ -108,7 +100,11 @@ const Exclusions = () => {
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [id]: value }));
+    if (id === "search") {
+      setSearchTerm(value);
+    } else {
+      setFormData((prevData) => ({ ...prevData, [id]: value }));
+    }
   };
 
   const handleEditorChange = (event, editor) => {
@@ -125,6 +121,7 @@ const Exclusions = () => {
     setEditMode(true);
     setShowForm(true);
   };
+
   const handleUpdateFormSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -168,7 +165,6 @@ const Exclusions = () => {
       const response = await putRequest(
         `${EXCLUSION}/status/${selectedItem}?status=${status}`
       );
-
       if (response.status === 200) {
         showPopup(
           response.message || "Status updated successfully!",
@@ -194,6 +190,20 @@ const Exclusions = () => {
     }
   };
 
+  const filterExclusions = (exclusions) => {
+    return exclusions.filter((item) =>
+      item.exclusionName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.exclusionDescription.toLowerCase().includes(searchTerm.toLowerCase()) 
+    );
+  };
+
+  const filteredExclusions = filterExclusions(exclusionData);
+  const totalFilteredProducts = filteredExclusions.length;
+  const filteredTotalPages = Math.ceil(totalFilteredProducts / resultsPerPage);
+  const indexOfLastExclusion = currentPage * resultsPerPage;
+  const indexOfFirstExclusion = indexOfLastExclusion - resultsPerPage;
+  const currentExclusions = filteredExclusions.slice(indexOfFirstExclusion, indexOfLastExclusion);
+
   const handlePrevious = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
@@ -201,7 +211,7 @@ const Exclusions = () => {
   };
 
   const handleNext = () => {
-    if (currentPage < totalPages) {
+    if (currentPage < filteredTotalPages) {
       setCurrentPage(currentPage + 1);
     }
   };
@@ -223,10 +233,27 @@ const Exclusions = () => {
               <div>
                 {!showForm ? (
                   <>
+                    <form className="d-inline-block serachform" role="search">
+                      <div className="input-group searchinput">
+                        <input
+                          type="search"
+                          className="form-control"
+                          placeholder="Search"
+                          aria-label="Search"
+                          aria-describedby="search-icon"
+                          id="search"
+                          value={searchTerm}
+                          onChange={handleInputChange}
+                        />
+                        <span className="input-group-text" id="search-icon">
+                          <i className="mdi mdi-magnify"></i>
+                        </span>
+                      </div>
+                    </form>
                     <button
                       type="button"
                       className="btn btn-success me-2"
-                      onClick={() => setShowForm(true)} // Show  form
+                      onClick={() => setShowForm(true)}
                     >
                       <i className="mdi mdi-plus"></i> Create
                     </button>
@@ -238,7 +265,7 @@ const Exclusions = () => {
                   <button
                     type="button"
                     className="btn btn-secondary"
-                    onClick={() => setShowForm(false)} // Show  form
+                    onClick={() => setShowForm(false)}
                   >
                     <i className="mdi mdi-arrow-left"></i> Back
                   </button>
@@ -253,17 +280,17 @@ const Exclusions = () => {
                       <thead className="table-light">
                         <tr>
                           <th>Sr. No.</th>
-                          <th> Name</th>
-                          <th> Description</th>
+                          <th>Name</th>
+                          <th>Description</th>
                           <th>Edit</th>
                           <th>Status</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {exclusionData.length > 0 ? (
-                          exclusionData.map((item, index) => (
+                        {currentExclusions.length > 0 ? (
+                          currentExclusions.map((item, index) => (
                             <tr key={item.id}>
-                              <td>{index + 1}</td>
+                              <td>{indexOfFirstExclusion + index + 1}</td>
                               <td>{item.exclusionName}</td>
                               <td
                                 dangerouslySetInnerHTML={{
@@ -285,7 +312,6 @@ const Exclusions = () => {
                                   <i className="mdi mdi-square-edit-outline"></i>
                                 </button>
                               </td>
-
                               <td>
                                 <div className="form-check form-switch">
                                   <input
@@ -311,7 +337,7 @@ const Exclusions = () => {
                         ) : (
                           <tr>
                             <td colSpan="5" className="text-center">
-                              There are no records.
+                              No matching records found.
                             </td>
                           </tr>
                         )}
@@ -321,8 +347,8 @@ const Exclusions = () => {
                   <nav className="d-flex justify-content-between align-items-center mt-3">
                     <div>
                       <span>
-                        Page {currentPage} of {totalPages} | Total Products:{" "}
-                        {totalProducts}
+                        Page {currentPage} of {filteredTotalPages} | Total Records:{" "}
+                        {totalFilteredProducts}
                       </span>
                     </div>
                     <ul className="pagination mb-0">
@@ -335,7 +361,7 @@ const Exclusions = () => {
                           &laquo;
                         </button>
                       </li>
-                      {[...Array(totalPages)].map((_, index) => (
+                      {[...Array(filteredTotalPages)].map((_, index) => (
                         <li
                           className={`page-item ${
                             currentPage === index + 1 ? "active" : ""
@@ -352,7 +378,7 @@ const Exclusions = () => {
                       ))}
                       <li
                         className={`page-item ${
-                          currentPage === totalPages ? "disabled" : ""
+                          currentPage === filteredTotalPages ? "disabled" : ""
                         }`}
                       >
                         <button className="page-link" onClick={handleNext}>
@@ -381,19 +407,14 @@ const Exclusions = () => {
                           className="form-control"
                           id="exclusionName"
                           placeholder="Exclusion Name"
-                          onChange={(e) =>
-                            setFormData((prevData) => ({
-                              ...prevData,
-                              exclusionName: e.target.value,
-                            }))
-                          }
+                          onChange={handleInputChange}
                           value={formData.exclusionName}
                         />
                       </div>
 
                       <div className="form-group col-md-12">
                         <label htmlFor="Exclusion-editor">
-                        Exclusion Description
+                          Exclusion Description
                         </label>
                         <div ref={exclusionRef}></div>
                         <CKEditor
@@ -425,19 +446,12 @@ const Exclusions = () => {
 
                             editor.editing.view.change((writer) => {
                               writer.setStyle(
-                                "min-height",
-                                "100px",
+                                "min-height", "100px",
                                 editor.editing.view.document.getRoot()
                               );
                             });
                           }}
-                          onChange={(event, editor) => {
-                            const data = editor.getData();
-                            setFormData((prevData) => ({
-                              ...prevData,
-                              exclusionDescription: data,
-                            }));
-                          }}
+                          onChange={handleEditorChange}
                         />
                       </div>
 
@@ -471,7 +485,7 @@ const Exclusions = () => {
               <div className="modal-body">
                 <p className="text-lg mb-4 text-center">
                   Are you sure you want to{" "}
-                  {newStatus ? "activate" : "deactivate"} this inclusion?
+                  {newStatus ? "activate" : "deactivate"} this exclusion?
                 </p>
               </div>
               <div className="modal-footer">
@@ -499,3 +513,4 @@ const Exclusions = () => {
 };
 
 export default Exclusions;
+
