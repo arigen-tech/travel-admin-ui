@@ -1,7 +1,11 @@
 import React, { useState } from "react";
+import Popup from "../../../../components/popup";
 
 const RoomType = () => {
     const [showForm, setShowForm] = useState(false);
+    const [popup, setPopup] = useState("");
+    const [popupMessage, setPopupMessage] = useState("");
+
     const [currentPage, setCurrentPage] = useState(1);
     const totalPages = 3;
     const totalRecords = 12;
@@ -18,6 +22,18 @@ const RoomType = () => {
             setCurrentPage(currentPage - 1);
         }
     };
+
+    const showPopup = (message, type = 'info') => {
+        setPopupMessage({
+            message,
+            type,
+            onClose: () => {
+                setPopupMessage(null);
+                window.location.reload();
+            }
+        });
+    };
+    
 
     const handleNext = () => {
         if (currentPage < totalPages) {
@@ -39,7 +55,7 @@ const RoomType = () => {
             setRoomTypes(roomTypes.map(roomTypes =>
                 roomTypes.id === editingRoom.id ? { ...roomTypes, name: newName } : roomTypes
             ));
-            alert('Room type updated successfully!');
+            showPopup('Room type updated successfully!', "success");
         } else {
             setRoomTypes([...roomTypes, {
                 id: roomTypes.length + 1,
@@ -74,6 +90,13 @@ const RoomType = () => {
 
     return (
         <div className="content-wrapper">
+            {popupMessage && (
+                <Popup
+                    message={popupMessage.message}
+                    type={popupMessage.type}
+                    onClose={popupMessage.onClose}
+                />
+            )}
             <div className="row">
                 <div className="col-12 grid-margin stretch-card">
                     <div className="card form-card">
@@ -245,7 +268,7 @@ const RoomType = () => {
                                 </button>
                             </div>
                             <div className="modal-body">
-                                <p>Are you sure you want to {confirmDialog.newStatus ? 'activate' : 'deactivate'} <strong>{roomTypes.find( room => room.id === confirmDialog.roomId)?.name}</strong>?</p>
+                                <p>Are you sure you want to {confirmDialog.newStatus ? 'activate' : 'deactivate'} <strong>{roomTypes.find(room => room.id === confirmDialog.roomId)?.name}</strong>?</p>
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" onClick={() => handleConfirm(false)}>No</button>
