@@ -262,8 +262,7 @@ const Inclusions = () => {
                             <tr key={item.id}>
                               <td>{index + 1}</td>
                               <td>{item.inclusionName}</td>
-                              <td>{item.inclusionDesc}</td>
-
+                              <td dangerouslySetInnerHTML={{ __html: item.inclusionDesc }}></td>
                               <td>
                                 <button
                                   className={`btn btn-sm btn-success me-2 ${
