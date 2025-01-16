@@ -26,7 +26,7 @@ const Inclusions = () => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [newStatus, setNewStatus] = useState(false);
-  const totalProducts = inclusionData?.length;
+  const [searchTerm, setSearchTerm] = useState("");
   const inclusionRef = useRef(null);
   const editorRef = useRef(null);
   const resultsPerPage = 10;
@@ -47,7 +47,7 @@ const Inclusions = () => {
         setTotalPages(1);
       }
     } catch (error) {
-      console.error("Error fetching tagCatyegory data:", error);
+      console.error("Error fetching inclusion data:", error);
     } finally {
       setLoading(false);
     }
@@ -56,6 +56,10 @@ const Inclusions = () => {
   useEffect(() => {
     fetchInclusionData();
   }, []);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
 
   const showPopup = (message, type = "info") => {
     setPopupMessage({
@@ -98,7 +102,7 @@ const Inclusions = () => {
         console.error("Error adding inclusion:", error);
         showPopup(
           error.response?.message ||
-            "An error occurred while adding the inclusion.",
+          "An error occurred while adding the inclusion.",
           "error"
         );
       }
@@ -109,7 +113,11 @@ const Inclusions = () => {
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [id]: value }));
+    if (id === "search") {
+      setSearchTerm(value);
+    } else {
+      setFormData((prevData) => ({ ...prevData, [id]: value }));
+    }
   };
 
   const handleEditorChange = (event, editor) => {
@@ -126,6 +134,7 @@ const Inclusions = () => {
     setEditMode(true);
     setShowForm(true);
   };
+
   const handleUpdateFormSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -197,10 +206,25 @@ const Inclusions = () => {
   };
 
   const handleNext = () => {
-    if (currentPage < totalPages) {
+    if (currentPage < filteredTotalPages) {
       setCurrentPage(currentPage + 1);
     }
   };
+
+  const filterInclusions = (inclusions) => {
+    return inclusions.filter((item) =>
+      item.inclusionName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.inclusionDesc.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.status.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  };
+
+  const filteredInclusions = filterInclusions(inclusionData);
+  const totalFilteredProducts = filteredInclusions.length;
+  const filteredTotalPages = Math.ceil(totalFilteredProducts / resultsPerPage);
+  const indexOfLastInclusion = currentPage * resultsPerPage;
+  const indexOfFirstInclusion = indexOfLastInclusion - resultsPerPage;
+  const currentInclusions = filteredInclusions.slice(indexOfFirstInclusion, indexOfLastInclusion);
 
   return (
     <div className="content-wrapper">
@@ -215,15 +239,31 @@ const Inclusions = () => {
           )}
           <div className="card form-card">
             <div className="card-header d-flex justify-content-between align-items-center">
-              
               <h4 className="card-title">Inclusions</h4>
               <div>
                 {!showForm ? (
                   <>
+                    <form className="d-inline-block serachform" role="search">
+                      <div className="input-group searchinput">
+                        <input
+                          type="search"
+                          className="form-control"
+                          placeholder="Search"
+                          aria-label="Search"
+                          aria-describedby="search-icon"
+                          id="search"
+                          value={searchTerm}
+                          onChange={handleInputChange}
+                        />
+                        <span className="input-group-text" id="search-icon">
+                          <i className="mdi mdi-magnify"></i>
+                        </span>
+                      </div>
+                    </form>
                     <button
                       type="button"
                       className="btn btn-success me-2"
-                      onClick={() => setShowForm(true)} // Show  form
+                      onClick={() => setShowForm(true)}
                     >
                       <i className="mdi mdi-plus"></i> Create
                     </button>
@@ -235,7 +275,7 @@ const Inclusions = () => {
                   <button
                     type="button"
                     className="btn btn-secondary"
-                    onClick={() => setShowForm(false)} // Show  form
+                    onClick={() => setShowForm(false)}
                   >
                     <i className="mdi mdi-arrow-left"></i> Back
                   </button>
@@ -250,24 +290,22 @@ const Inclusions = () => {
                       <thead className="table-light">
                         <tr>
                           <th>Sr. No.</th>
-                          <th> Name</th>
-                          <th> Description</th>
+                          <th>Name</th>
+                          <th>Description</th>
                           <th>Edit</th>
                           <th>Status</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {inclusionData.length > 0 ? (
-                          inclusionData.map((item, index) => (
+                        {currentInclusions.length > 0 ? (
+                          currentInclusions.map((item, index) => (
                             <tr key={item.id}>
-                              <td>{index + 1}</td>
+                              <td>{indexOfFirstInclusion + index + 1}</td>
                               <td>{item.inclusionName}</td>
                               <td dangerouslySetInnerHTML={{ __html: item.inclusionDesc }}></td>
                               <td>
                                 <button
-                                  className={`btn btn-sm btn-success me-2 ${
-                                    item.status === "n" ? "disabled" : ""
-                                  }`}
+                                  className={`btn btn-sm btn-success me-2 ${item.status === "n" ? "disabled" : ""}`}
                                   disabled={item.status === "n"}
                                   onClick={() => {
                                     if (item.status === "y") {
@@ -278,7 +316,6 @@ const Inclusions = () => {
                                   <i className="mdi mdi-square-edit-outline"></i>
                                 </button>
                               </td>
-
                               <td>
                                 <div className="form-check form-switch">
                                   <input
@@ -304,7 +341,7 @@ const Inclusions = () => {
                         ) : (
                           <tr>
                             <td colSpan="5" className="text-center">
-                              There are no records.
+                              No matching records found.
                             </td>
                           </tr>
                         )}
@@ -314,25 +351,21 @@ const Inclusions = () => {
                   <nav className="d-flex justify-content-between align-items-center mt-3">
                     <div>
                       <span>
-                        Page {currentPage} of {totalPages} | Total Records:{" "}
-                        {totalProducts}
+                        Page {currentPage} of {filteredTotalPages} | Total Records:{" "}
+                        {totalFilteredProducts}
                       </span>
                     </div>
                     <ul className="pagination mb-0">
                       <li
-                        className={`page-item ${
-                          currentPage === 1 ? "disabled" : ""
-                        }`}
+                        className={`page-item ${currentPage === 1 ? "disabled" : ""}`}
                       >
                         <button className="page-link" onClick={handlePrevious}>
                           &laquo;
                         </button>
                       </li>
-                      {[...Array(totalPages)].map((_, index) => (
+                      {[...Array(filteredTotalPages)].map((_, index) => (
                         <li
-                          className={`page-item ${
-                            currentPage === index + 1 ? "active" : ""
-                          }`}
+                          className={`page-item ${currentPage === index + 1 ? "active" : ""}`}
                           key={index}
                         >
                           <button
@@ -344,9 +377,7 @@ const Inclusions = () => {
                         </li>
                       ))}
                       <li
-                        className={`page-item ${
-                          currentPage === totalPages ? "disabled" : ""
-                        }`}
+                        className={`page-item ${currentPage === filteredTotalPages ? "disabled" : ""}`}
                       >
                         <button className="page-link" onClick={handleNext}>
                           &raquo;
@@ -374,12 +405,7 @@ const Inclusions = () => {
                           className="form-control"
                           id="inclusionName"
                           placeholder="Inclusion Name"
-                          onChange={(e) =>
-                            setFormData((prevData) => ({
-                              ...prevData,
-                              inclusionName: e.target.value,
-                            }))
-                          }
+                          onChange={handleInputChange}
                           value={formData.inclusionName}
                         />
                       </div>
@@ -424,13 +450,7 @@ const Inclusions = () => {
                               );
                             });
                           }}
-                          onChange={(event, editor) => {
-                            const data = editor.getData();
-                            setFormData((prevData) => ({
-                              ...prevData,
-                              inclusionDesc: data,
-                            }));
-                          }}
+                          onChange={handleEditorChange}
                         />
                       </div>
 
@@ -493,3 +513,4 @@ const Inclusions = () => {
 };
 
 export default Inclusions;
+
