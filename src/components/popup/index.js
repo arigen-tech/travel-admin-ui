@@ -40,7 +40,7 @@ const Popup = ({ message, type = "default", onClose }) => {
   const handleClose = () => {
     setIsVisible(false);
     if (onClose) {
-      onClose(); // This will trigger the refresh functionality
+      onClose(); 
     }
   };
 
@@ -53,17 +53,15 @@ const Popup = ({ message, type = "default", onClose }) => {
       className="position-fixed top-0 start-0 w-100 h-100 bg-black bg-opacity-50 d-flex justify-content-center align-items-center"
       style={{ zIndex: 1050 }}
     >
-      <div className="bg-white rounded shadow p-4 text-center">
+      <div className="bg-white rounded shadow p-4 text-center" style={{ maxWidth: "90%", width: "25rem" }}>
         <div
-          className={`d-flex align-items-center justify-content-center rounded-circle border border-4 border-${styles.iconColor.split("-")[1]} mb-4`}
+          className={`d-flex align-items-center justify-content-center rounded-circle border border-4 ${styles.iconColor} mb-4 mx-auto`}
           style={{
-            width: "64px",
-            height: "64px",
-            fontSize: "2rem",
-            color: styles.iconColor,
+            width: "4rem",
+            height: "4rem",
           }}
         >
-          {styles.icon}
+          <span style={{ fontSize: "2rem" }}>{styles.icon}</span>
         </div>
         <h3 className={`mb-4 ${styles.titleColor}`}>{message}</h3>
         <button
@@ -79,3 +77,4 @@ const Popup = ({ message, type = "default", onClose }) => {
 };
 
 export default Popup;
+

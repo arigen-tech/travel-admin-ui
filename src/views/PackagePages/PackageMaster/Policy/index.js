@@ -370,7 +370,7 @@ const Policy = () => {
                   <nav className="d-flex justify-content-between align-items-center mt-3">
                     <div>
                       <span>
-                        Page {currentPage} of {totalPages} | Total Products:{" "}
+                        Page {currentPage} of {totalPages} | Total Records:{totalFilteredProducts}
                         {/* {totalProducts} */}
                       </span>
                     </div>

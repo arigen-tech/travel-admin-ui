@@ -1,4 +1,4 @@
-import React, { useState , useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import Popup from "../../../../components/popup";
 
 const Similarhotel = () => {
@@ -22,6 +22,7 @@ const Similarhotel = () => {
             isActive: true
         }
     ]);
+    const [searchQuery, setSearchQuery] = useState("");
     const [showForm, setShowForm] = useState(false);
     const [isFormValid, setIsFormValid] = useState(false);
 
@@ -38,7 +39,6 @@ const Similarhotel = () => {
         newStatus: false
     });
 
-    // List of all available hotels
     const hotelOptions = [
         "Hotel Opera Lafayette",
         "Timhotel Tour Montparnasse",
@@ -76,6 +76,11 @@ const Similarhotel = () => {
         });
     };
 
+    const filteredHotels = hotels.filter(hotel =>
+        hotel.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        hotel.similarHotels.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     const handleStatusToggle = (id, newStatus) => {
         const hotel = hotels.find(hotel => hotel.id === id);
         setConfirmDialog({
@@ -100,10 +105,12 @@ const Similarhotel = () => {
         setSelectedHotel(hotel.name);
         setSelectedSimilarHotel(hotel.similarHotels);
     };
+
+    
     useEffect(() => {
         setIsFormValid(selectedHotel.trim() && selectedSimilarHotel.trim());
-      }, [selectedHotel, selectedSimilarHotel]);
-      
+    }, [selectedHotel, selectedSimilarHotel]);
+
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -181,6 +188,8 @@ const Similarhotel = () => {
                                                     placeholder="Search"
                                                     aria-label="Search"
                                                     aria-describedby="search-icon"
+                                                    value={searchQuery}
+                                                    onChange={(e) => setSearchQuery(e.target.value)}
                                                 />
                                                 <span className="input-group-text" id="search-icon">
                                                     <i className="mdi mdi-magnify"></i>
@@ -229,8 +238,8 @@ const Similarhotel = () => {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {hotels.length > 0 ? (
-                                                    hotels.map((hotel, index) => (
+                                                {filteredHotels.length > 0 ? (
+                                                    filteredHotels.map((hotel, index) => (
                                                         <tr key={hotel.id}>
                                                             <td>{index + 1}</td>
                                                             <td>{hotel.name}</td>
@@ -350,7 +359,7 @@ const Similarhotel = () => {
                                         >
                                             Cancel
                                         </button>
-                                        <button type="submit" className="btn btn-primary"  disabled={!isFormValid}>
+                                        <button type="submit" className="btn btn-primary" disabled={!isFormValid}>
                                             {editingHotel ? 'Update' : 'Save'}
                                         </button>
                                     </div>
