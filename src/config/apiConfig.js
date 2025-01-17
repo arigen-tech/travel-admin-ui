@@ -8,8 +8,12 @@ export const SET_HOTEL_TYPE = `/masterController/createHotelType`;
 export const UPDATE_HOTEL_TYPE=`/masterController/updateHotelType`;
 export const AMENITIES='/masterController/hotel-amenities';
 export const TAGCATEGORY='/masterController/tagCategory';
+
 export const INCLUSION='/masterController/inclusion';
 export const EXCLUSION='/masterController/exclusion';
+export const TAG_WISE='/masterController/createTag';
+export const POLICY='/masterController/policy';
+
 
 export const LOGIN='/authController/login';
 
