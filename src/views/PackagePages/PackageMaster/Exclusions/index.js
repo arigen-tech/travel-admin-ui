@@ -193,12 +193,11 @@ const Exclusions = () => {
   };
 
   const filterExclusions = (exclusions) => {
-    return exclusions.filter(
-      (item) =>
-        item.exclusionName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.exclusionDescription
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase())
+    if (!searchTerm.trim()) return exclusions; 
+    return exclusions.filter((item) =>
+      item.exclusionName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.exclusionDescription?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.status?.toLowerCase().includes(searchTerm.toLowerCase())
     );
   };
 

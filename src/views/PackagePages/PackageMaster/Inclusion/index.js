@@ -214,10 +214,11 @@ const Inclusions = () => {
   };
 
   const filterInclusions = (inclusions) => {
+    if (!searchTerm.trim()) return inclusions; 
     return inclusions.filter((item) =>
-      item.inclusionName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.inclusionDesc.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.status.toLowerCase().includes(searchTerm.toLowerCase())
+      item.inclusionName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.inclusionDesc?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.status?.toLowerCase().includes(searchTerm.toLowerCase())
     );
   };
 
