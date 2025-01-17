@@ -423,7 +423,7 @@ const Policy = () => {
                       }
                     >
                       <div className="form-group col-md-4">
-                        <label htmlFor="policyName">Policy Name</label>
+                        <label htmlFor="policyName">Policy Name <span className="text-danger">*</span></label>
                         <input
                           type="text"
                           required
@@ -480,7 +480,7 @@ const Policy = () => {
                       </div>
 
                       <div className="form-group col-md-12 d-flex justify-content-end">
-                        <button type="submit" className="btn btn-primary me-2">
+                        <button type="submit" className="btn btn-primary me-2"  disabled={!formData.policyName}>
                           {editMode ? "Save Changes" : "Submit"}
                         </button>
                         <button

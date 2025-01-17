@@ -408,7 +408,7 @@ const Exclusions = () => {
                       }
                     >
                       <div className="form-group col-md-4">
-                        <label htmlFor="exclusionName">Exclusion Name</label>
+                        <label htmlFor="exclusionName">Exclusion Name <span className="text-danger">*</span></label>
                         <input
                           type="text"
                           required
@@ -465,7 +465,7 @@ const Exclusions = () => {
                       </div>
 
                       <div className="form-group col-md-12 d-flex justify-content-end">
-                        <button type="submit" className="btn btn-primary me-2">
+                        <button type="submit" className="btn btn-primary me-2" disabled={!formData.exclusionName}>
                           {editMode ? "Save Changes" : "Submit"}
                         </button>
                         <button
