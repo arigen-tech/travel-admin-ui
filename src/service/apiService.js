@@ -142,3 +142,41 @@ async function uploadFileWithJson(endpoint, jsonData, file) {
 }
 
 export { uploadFileWithJson };
+
+
+async function uploadMultiFileWithJson(endpoint, jsonData, files1, files2) {
+    let token;
+    if (localStorage.token) {
+      token = { Authorization: `Bearer ${localStorage.getItem("token")}` };
+    } else {
+      token = { Authorization: `Bearer ${sessionStorage.getItem("token")}` };
+    }
+  
+    const formData = new FormData();
+    formData.append("json", new Blob([JSON.stringify(jsonData)], { type: "application/json" }));
+    formData.append(`bannerImage`, files1); 
+    formData.append(`thumbImage`, files2); 
+
+  
+    try {
+      const response = await fetch(`${BASE_URL}${endpoint}`, {
+        method: "POST",
+        headers: {
+          ...token,
+        },
+        body: formData,
+      });
+  
+      if (!response.ok) {
+        const errorText = await response.text(); 
+        throw new Error(errorText || `HTTP error! status: ${response.status}`);
+      }
+  
+      return await response.json();
+    } catch (error) {
+      console.error("Error during file upload:", error.message);
+      throw error;
+    }
+  }
+  
+  export { uploadMultiFileWithJson };

@@ -223,7 +223,9 @@ const Policy = () => {
     return policies.filter(
       (item) =>
         item.policyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.policyDescription?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.policyDescription
+          ?.toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
         item.status?.toLowerCase().includes(searchTerm.toLowerCase())
     );
   };
@@ -370,7 +372,8 @@ const Policy = () => {
                   <nav className="d-flex justify-content-between align-items-center mt-3">
                     <div>
                       <span>
-                        Page {currentPage} of {totalPages} | Total Records:{totalFilteredProducts}
+                        Page {currentPage} of {totalPages} | Total Records:
+                        {totalFilteredProducts}
                         {/* {totalProducts} */}
                       </span>
                     </div>
@@ -423,7 +426,9 @@ const Policy = () => {
                       }
                     >
                       <div className="form-group col-md-4">
-                        <label htmlFor="policyName">Policy Name <span className="text-danger">*</span></label>
+                        <label htmlFor="policyName">
+                          Policy Name <span className="text-danger">*</span>
+                        </label>
                         <input
                           type="text"
                           required
@@ -480,7 +485,11 @@ const Policy = () => {
                       </div>
 
                       <div className="form-group col-md-12 d-flex justify-content-end">
-                        <button type="submit" className="btn btn-primary me-2"  disabled={!formData.policyName}>
+                        <button
+                          type="submit"
+                          className="btn btn-primary me-2"
+                          disabled={!formData.policyName}
+                        >
                           {editMode ? "Save Changes" : "Submit"}
                         </button>
                         <button

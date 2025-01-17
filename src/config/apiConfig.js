@@ -12,6 +12,7 @@ export const TAGCATEGORY='/masterController/tagCategory';
 export const INCLUSION='/masterController/inclusion';
 export const EXCLUSION='/masterController/exclusion';
 export const TAG_WISE='/masterController/createTag';
+export const TAG_WISES='/masterController/tagWise';
 export const POLICY='/masterController/policy';
 
 
