@@ -26,6 +26,7 @@ const Inclusions = () => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [newStatus, setNewStatus] = useState(false);
+  const [itemName, setItemName] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const inclusionRef = useRef(null);
   const editorRef = useRef(null);
@@ -164,9 +165,10 @@ const Inclusions = () => {
     }
   };
 
-  const handleStatusChange = (id, status) => {
+  const handleStatusChange = (id, status, inclusionName) => {
     setSelectedItem(id);
     setNewStatus(status);
+    setItemName(inclusionName);
     setShowConfirmation(true);
   };
 
@@ -325,7 +327,8 @@ const Inclusions = () => {
                                     onChange={() =>
                                       handleStatusChange(
                                         item.id,
-                                        item.status !== "y"
+                                        item.status !== "y",
+                                        item.inclusionName
                                       )
                                     }
                                   />
@@ -485,7 +488,7 @@ const Inclusions = () => {
               <div className="modal-body">
                 <p className="text-lg mb-4 text-center">
                   Are you sure you want to{" "}
-                  {newStatus ? "activate" : "deactivate"} this inclusion?
+                  <strong>{newStatus ? "Activate" : "Deactivate"}</strong> To <strong>{itemName}</strong> ?
                 </p>
               </div>
               <div className="modal-footer">

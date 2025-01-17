@@ -23,6 +23,7 @@ const Exclusions = () => {
   const [exclusionData, setExclusionData] = useState([]);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [itemName, setItemName] = useState("");
   const [newStatus, setNewStatus] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const exclusionRef = useRef(null);
@@ -152,9 +153,10 @@ const Exclusions = () => {
     }
   };
 
-  const handleStatusChange = (id, status) => {
+  const handleStatusChange = (id, status, exclusionName) => {
     setSelectedItem(id);
     setNewStatus(status);
+    setItemName(exclusionName);
     setShowConfirmation(true);
   };
 
@@ -191,9 +193,12 @@ const Exclusions = () => {
   };
 
   const filterExclusions = (exclusions) => {
-    return exclusions.filter((item) =>
-      item.exclusionName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.exclusionDescription.toLowerCase().includes(searchTerm.toLowerCase()) 
+    return exclusions.filter(
+      (item) =>
+        item.exclusionName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.exclusionDescription
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase())
     );
   };
 
@@ -202,7 +207,10 @@ const Exclusions = () => {
   const filteredTotalPages = Math.ceil(totalFilteredProducts / resultsPerPage);
   const indexOfLastExclusion = currentPage * resultsPerPage;
   const indexOfFirstExclusion = indexOfLastExclusion - resultsPerPage;
-  const currentExclusions = filteredExclusions.slice(indexOfFirstExclusion, indexOfLastExclusion);
+  const currentExclusions = filteredExclusions.slice(
+    indexOfFirstExclusion,
+    indexOfLastExclusion
+  );
 
   const handlePrevious = () => {
     if (currentPage > 1) {
@@ -321,7 +329,8 @@ const Exclusions = () => {
                                     onChange={() =>
                                       handleStatusChange(
                                         item.id,
-                                        item.status !== "y"
+                                        item.status !== "y",
+                                        item.exclusionName
                                       )
                                     }
                                   />
@@ -347,8 +356,8 @@ const Exclusions = () => {
                   <nav className="d-flex justify-content-between align-items-center mt-3">
                     <div>
                       <span>
-                        Page {currentPage} of {filteredTotalPages} | Total Records:{" "}
-                        {totalFilteredProducts}
+                        Page {currentPage} of {filteredTotalPages} | Total
+                        Records: {totalFilteredProducts}
                       </span>
                     </div>
                     <ul className="pagination mb-0">
@@ -446,7 +455,8 @@ const Exclusions = () => {
 
                             editor.editing.view.change((writer) => {
                               writer.setStyle(
-                                "min-height", "100px",
+                                "min-height",
+                                "100px",
                                 editor.editing.view.document.getRoot()
                               );
                             });
@@ -483,9 +493,9 @@ const Exclusions = () => {
                 <h5 className="modal-title">Confirm Status Change</h5>
               </div>
               <div className="modal-body">
-                <p className="text-lg mb-4 text-center">
+              <p className="text-lg mb-4 text-center">
                   Are you sure you want to{" "}
-                  {newStatus ? "activate" : "deactivate"} this exclusion?
+                  <strong>{newStatus ? "Activate" : "Deactivate"}</strong> To <strong>{itemName}</strong> ?
                 </p>
               </div>
               <div className="modal-footer">
@@ -513,4 +523,3 @@ const Exclusions = () => {
 };
 
 export default Exclusions;
-
