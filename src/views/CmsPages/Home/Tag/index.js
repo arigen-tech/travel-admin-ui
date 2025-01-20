@@ -3,23 +3,27 @@ import { CKEditor } from "@ckeditor/ckeditor5-react";
 import DecoupledEditor from "@ckeditor/ckeditor5-build-decoupled-document";
 import {
   uploadMultiFileWithJson,
+  updateMultiFileWithJson,
   getRequest,
   putRequest,
 } from "../../../../service/apiService.js";
-import { TAG_WISE, TAG_WISES } from "../../../../config/apiConfig";
+import { TAG_WISE, TAG_WISES, API_HOST } from "../../../../config/apiConfig";
 import Popup from "../../../../components/popup";
+import image from "../../../../asset/images/Animation - 1735037321858.gif";
 
 const Tag = () => {
   const [formData, setFormData] = useState({
     name: "",
     heading: "",
-    thumbImg: null,
-    bannerImg: null,
+    thumbImg: "",
+    bannerImg: "",
     description: "",
     isFeature: false,
     showOnPkg: false,
     orderNo: "",
   });
+  const [editMode, setEditMode] = useState(false);
+  const [editId, setEditId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -44,12 +48,11 @@ const Tag = () => {
       type,
       onClose: () => {
         setPopupMessage(null);
-        window.location.reload();
       },
     });
   };
 
-  const fetchInclusionData = async () => {
+  const fetchTagData = async () => {
     setLoading(true);
 
     const GETALL = "/masterController/getAllTags";
@@ -72,7 +75,7 @@ const Tag = () => {
   };
 
   useEffect(() => {
-    fetchInclusionData();
+    fetchTagData();
   }, []);
 
   useEffect(() => {
@@ -84,14 +87,6 @@ const Tag = () => {
     setFormData((prevData) => ({
       ...prevData,
       [id]: type === "checkbox" ? checked : value,
-    }));
-  };
-
-  const handleFileChange = (e) => {
-    const { id, files } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [id]: files[0],
     }));
   };
 
@@ -136,7 +131,7 @@ const Tag = () => {
 
       if (response.status === 200) {
         showPopup(response.message || "Tag submitted successfully!", "success");
-        fetchInclusionData();
+        fetchTagData();
         setFormData({
           name: "",
           heading: "",
@@ -147,6 +142,7 @@ const Tag = () => {
           showOnPkg: false,
           orderNo: "",
         });
+        setShowForm(false);
       } else {
         showPopup(
           response?.message || "Failed to submit the tag. Please try again.",
@@ -158,6 +154,80 @@ const Tag = () => {
       showPopup(
         error?.response?.message ||
           "An error occurred while submitting the tag.",
+        "error"
+      );
+    }
+  };
+
+  const handleEdit = (item) => {
+    setFormData({
+      name: item.tagName,
+      heading: item.heading,
+      description: item.description,
+      bannerImg: item.bannerImg,
+      thumbImg: item.thumbImg,
+      isFeature: item.isFeature,
+      showOnPkg: item.showOnPkg,
+      orderNo: item.orderNo,
+    });
+    setEditId(item.id);
+    setEditMode(true);
+    setShowForm(true);
+  };
+
+  const handleUpdateFormSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!formData.name || !formData.heading || !formData.orderNo) {
+      alert("Please fill out all required fields.");
+      return;
+    }
+
+    let json = {
+      tagName: formData.name,
+      heading: formData.heading,
+      description: formData.description || "",
+      isFeature: formData.isFeature ? "y" : "n",
+      showOnPkg: formData.showOnPkg ? "y" : "n",
+      orderNo: formData.orderNo,
+    };
+
+    console.log(json);
+
+    try {
+      const response = await updateMultiFileWithJson(
+        `/masterController/tagWise/${editId}`,
+        json,
+        formData.bannerImg,
+        formData.thumbImg
+      );
+
+      if (response.status === 200) {
+        showPopup(response.message || "Tag updated successfully!", "success");
+        fetchTagData();
+        setFormData({
+          name: "",
+          heading: "",
+          description: "",
+          bannerImg: null,
+          thumbImg: null,
+          isFeature: false,
+          showOnPkg: false,
+          orderNo: "",
+        });
+        setShowForm(false);
+        setEditMode(false);
+        setEditId(null);
+      } else {
+        showPopup(
+          response?.message || "Failed to update the tag. Please try again.",
+          "error"
+        );
+      }
+    } catch (error) {
+      console.error("Error updating tag:", error);
+      showPopup(
+        error?.response?.message || "An error occurred while updating the tag.",
         "error"
       );
     }
@@ -183,7 +253,7 @@ const Tag = () => {
           response.message || "Status updated successfully!",
           "success"
         );
-        fetchInclusionData();
+        fetchTagData();
         setShowConfirmation(false);
         setSelectedItem(null);
         setNewStatus(false);
@@ -209,6 +279,16 @@ const Tag = () => {
       setSearchTerm(value);
     } else {
       setFormData((prevData) => ({ ...prevData, [id]: value }));
+    }
+  };
+
+  const handleFileChange = (e, field) => {
+    const file = e.target.files[0]; // Get the selected file
+    if (file) {
+      setFormData((prevData) => ({
+        ...prevData,
+        [field]: file,
+      }));
     }
   };
 
@@ -324,8 +404,21 @@ const Tag = () => {
                                   __html: item.description,
                                 }}
                               ></td>
-                              <td>{item.bannerImg}</td>
-                              <td>{item.thumbImg}</td>
+
+                              <td>
+                                <img
+                                  src={item.bannerImg}
+                                  alt="Banner"
+                                  className="w-20 h-20 object-cover"
+                                />
+                              </td>
+                              <td>
+                                <img
+                                  src={item.thumbImg}
+                                  alt="Thumbnail"
+                                  className="w-20 h-20 object-cover"
+                                />
+                              </td>
 
                               <td>
                                 <button
@@ -335,7 +428,7 @@ const Tag = () => {
                                   disabled={item.status === "n"}
                                   onClick={() => {
                                     if (item.status === "y") {
-                                      // handleEdit(item);
+                                      handleEdit(item);
                                     }
                                   }}
                                 >
@@ -420,138 +513,163 @@ const Tag = () => {
                   </nav>
                 </>
               ) : (
-                <form className="forms row" onSubmit={handleSubmit}>
-                  <div className="form-group col-md-4">
-                    <label>Name</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="name"
-                      placeholder="Name"
-                      value={formData.name}
-                      onChange={handleChange}
-                    />
-                  </div>
-                  <div className="form-group col-md-4">
-                    <label>Heading</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="heading"
-                      placeholder="Heading"
-                      value={formData.heading}
-                      onChange={handleChange}
-                    />
-                  </div>
-                  <div className="form-group col-md-4">
-                    <label htmlFor="thumbImg">Thumb Image</label>
-                    <input
-                      type="file"
-                      className="form-control"
-                      id="thumbImg"
-                      accept="image/*"
-                      onChange={handleFileChange}
-                    />
-                  </div>
-                  <div className="form-group col-md-6">
-                    <label htmlFor="bannerImg">Banner Image</label>
-                    <input
-                      type="file"
-                      className="form-control"
-                      id="bannerImg"
-                      accept="image/*"
-                      onChange={handleFileChange}
-                    />
-                  </div>
-
-                  <div className="form-group col-md-12">
-                    <label htmlFor="inclusion-editor">Tag Description</label>
-                    <div ref={tagRef}></div>
-                    <CKEditor
-                      editor={DecoupledEditor}
-                      data={formData.description}
-                      config={{
-                        toolbar: { shouldNotGroupWhenFull: true },
-                        alignment: {
-                          options: ["left", "center", "right", "justify"],
-                        },
-                        table: {
-                          contentToolbar: [
-                            "tableColumn",
-                            "tableRow",
-                            "mergeTableCells",
-                            "tableProperties",
-                            "tableCellProperties",
-                          ],
-                        },
-                      }}
-                      onReady={(editor) => {
-                        editorRef.current = editor;
-
-                        const toolbarContainer = tagRef.current;
-                        toolbarContainer.innerHTML = "";
-                        toolbarContainer.appendChild(
-                          editor.ui.view.toolbar.element
-                        );
-
-                        editor.editing.view.change((writer) => {
-                          writer.setStyle(
-                            "min-height",
-                            "100px",
-                            editor.editing.view.document.getRoot()
-                          );
-                        });
-                      }}
-                      onChange={handleEditorChange}
-                    />
-                  </div>
-                  <div className="d-flex align-items-space-center justify-content-center">
-                    <div className="d-flex align-items-center">
-                      <div className="form-check me-3">
+                <>
+                  {showForm && (
+                    <form
+                      className="forms row"
+                      onSubmit={
+                        editMode ? handleUpdateFormSubmit : handleSubmit
+                      }
+                    >
+                      <div className="form-group col-md-4">
+                        <label>Name</label>
                         <input
-                          className="form-check-input"
-                          type="checkbox"
-                          id="isFeature"
-                          checked={formData.isFeature}
-                          onChange={handleChange}
-                        />
-                        <label className="form-check-label" htmlFor="isFeature">
-                          isFeature
-                        </label>
-                      </div>
-                      <div className="form-check me-3">
-                        <input
-                          className="form-check-input"
-                          type="checkbox"
-                          id="showOnPkg"
-                          checked={formData.showOnPkg}
-                          onChange={handleChange}
-                        />
-                        <label className="form-check-label" htmlFor="showOnPkg">
-                          Show On Package
-                        </label>
-                      </div>
-                      <div className="form-group">
-                        <label>Order No</label>
-                        <input
+                          type="text"
                           className="form-control"
-                          id="orderNo"
-                          placeholder="Enter orderNo"
-                          value={formData.orderNo}
+                          id="name"
+                          placeholder="Name"
+                          value={formData.name}
                           onChange={handleChange}
                         />
                       </div>
-                    </div>
-                  </div>
-                  <div className="form-group col-md-12 d-flex justify-content-end">
-                    <button type="submit" className="btn btn-primary me-2">
-                      Submit
-                    </button>
-                    <button type="button" className="btn btn-danger">
-                      Cancel
-                    </button>
-                  </div>
-                </form>
+                      <div className="form-group col-md-4">
+                        <label>Heading</label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="heading"
+                          placeholder="Heading"
+                          value={formData.heading}
+                          onChange={handleChange}
+                        />
+                      </div>
+                      <div className="form-group col-md-4">
+                        <label htmlFor="thumbImg">Thumb Image</label>
+                        <input
+                          type="file"
+                          className="form-control"
+                          id="thumbImg"
+                          accept="image/*"
+                          onChange={(e) => handleFileChange(e, "thumbImg")}
+                        />
+                      </div>
+                      <div className="form-group col-md-6">
+                        <label htmlFor="bannerImg">Banner Image</label>
+                        <input
+                          type="file"
+                          className="form-control"
+                          id="bannerImg"
+                          accept="image/*"
+                          onChange={(e) => handleFileChange(e, "bannerImg")}
+                        />
+                      </div>
+
+                      <div className="form-group col-md-12">
+                        <label htmlFor="inclusion-editor">
+                          Tag Description
+                        </label>
+                        <div ref={tagRef}></div>
+                        <CKEditor
+                          editor={DecoupledEditor}
+                          data={formData.description}
+                          config={{
+                            toolbar: { shouldNotGroupWhenFull: true },
+                            alignment: {
+                              options: ["left", "center", "right", "justify"],
+                            },
+                            table: {
+                              contentToolbar: [
+                                "tableColumn",
+                                "tableRow",
+                                "mergeTableCells",
+                                "tableProperties",
+                                "tableCellProperties",
+                              ],
+                            },
+                          }}
+                          onReady={(editor) => {
+                            editorRef.current = editor;
+
+                            const toolbarContainer = tagRef.current;
+                            toolbarContainer.innerHTML = "";
+                            toolbarContainer.appendChild(
+                              editor.ui.view.toolbar.element
+                            );
+
+                            editor.editing.view.change((writer) => {
+                              writer.setStyle(
+                                "min-height",
+                                "100px",
+                                editor.editing.view.document.getRoot()
+                              );
+                            });
+                          }}
+                          onChange={handleEditorChange}
+                        />
+                      </div>
+                      <div className="d-flex align-items-space-center justify-content-center">
+                        <div className="d-flex align-items-center">
+                          <div className="form-check me-3">
+                            <input
+                              className="form-check-input"
+                              type="checkbox"
+                              id="isFeature"
+                              checked={formData.isFeature}
+                              onChange={handleChange}
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor="isFeature"
+                            >
+                              isFeature
+                            </label>
+                          </div>
+                          <div className="form-check me-3">
+                            <input
+                              className="form-check-input"
+                              type="checkbox"
+                              id="showOnPkg"
+                              checked={formData.showOnPkg}
+                              onChange={handleChange}
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor="showOnPkg"
+                            >
+                              Show On Package
+                            </label>
+                          </div>
+                          <div className="form-group">
+                            <label>Order No</label>
+                            <input
+                              className="form-control"
+                              id="orderNo"
+                              placeholder="Enter orderNo"
+                              value={formData.orderNo}
+                              onChange={handleChange}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="form-group col-md-12 d-flex justify-content-end">
+                        <button
+                          type="submit"
+                          className="btn btn-primary me-2"
+                          disabled={!formData.name}
+                        >
+                          {editMode ? "Save Changes" : "Submit"}
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-danger"
+                          onClick={() => setShowForm(false)}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </form>
+                  )}
+                </>
               )}
             </div>
           </div>
