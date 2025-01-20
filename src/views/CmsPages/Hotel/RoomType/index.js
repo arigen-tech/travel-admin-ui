@@ -4,18 +4,26 @@ import Popup from "../../../../components/popup";
 const RoomType = () => {
     const [showForm, setShowForm] = useState(false);
     const [popupMessage, setPopupMessage] = useState(null);
+    const recordsPerPage = 5;
 
     const [currentPage, setCurrentPage] = useState(1);
-    const totalPages = 3;
-    const totalRecords = 12;
+
     const [roomTypes, setRoomTypes] = useState([
         { id: 1, name: 'Standard', isActive: true },
         { id: 2, name: 'Deluxe', isActive: false },
         { id: 3, name: 'Luxury', isActive: true }
     ]);
     const [editingRoom, setEditingRoom] = useState(null);
+    const [searchQuery, setSearchQuery] = useState("");
     const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, roomId: null, newStatus: false });
     const [nameInput, setNameInput] = useState(editingRoom?.name || '');
+
+
+    const filteredRoomTypes = roomTypes.filter(room =>
+        room.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    const totalRecords = filteredRoomTypes.length; 
+    const totalPages = Math.ceil(totalRecords / recordsPerPage);
 
     const handleNameChange = (e) => {
         setNameInput(e.target.value);
@@ -44,9 +52,17 @@ const RoomType = () => {
     };
 
     const handleEdit = (room) => {
-        setEditingRoom(room);
         setShowForm(true);
+        setEditingRoom(room);
+        setNameInput(room.name);
     };
+
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
+    };
+
+   
+    
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -116,6 +132,8 @@ const RoomType = () => {
                                                     placeholder="Search"
                                                     aria-label="Search"
                                                     aria-describedby="search-icon"
+                                                    value={searchQuery} 
+                                                    onChange={handleSearchChange} 
                                                 />
                                                 <span className="input-group-text" id="search-icon">
                                                     <i className="mdi mdi-magnify"></i>
@@ -158,41 +176,41 @@ const RoomType = () => {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {roomTypes.map((room, index) => (
-                                                    <tr key={room.id}>
-                                                        <td>{index + 1}</td>
-                                                        <td>{room.name}</td>
-                                                        <td>
-                                                            <button
-                                                                className="btn btn-sm btn-success me-2"
-                                                                onClick={() => handleEdit(room)}
-                                                                disabled={!room.isActive}
-                                                            >
-                                                                <i className="mdi mdi-square-edit-outline"></i>
-                                                            </button>
-                                                        </td>
-                                                        <td>
-                                                            <div className="form-check form-switch">
-                                                                <input
-                                                                    className="form-check-input"
-                                                                    type="checkbox"
-                                                                    checked={room.isActive}
-                                                                    onChange={() => handleStatusToggle(room.id, !room.isActive)}
-                                                                />
-                                                                <label className="form-check-label px-0">
-                                                                    {room.isActive ? 'Active' : 'Deactive'}
-                                                                </label>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
+                                {filteredRoomTypes.map((room, index) => ( // Use filteredRoomTypes here
+                                    <tr key={room.id}>
+                                        <td>{index + 1}</td>
+                                        <td>{room.name}</td>
+                                        <td>
+                                            <button
+                                                className="btn btn-sm btn-success me-2"
+                                                onClick={() => handleEdit(room)}
+                                                disabled={!room.isActive}
+                                            >
+                                                <i className="mdi mdi-square-edit-outline"></i>
+                                            </button>
+                                        </td>
+                                        <td>
+                                            <div className="form-check form-switch">
+                                                <input
+                                                    className="form-check-input"
+                                                    type="checkbox"
+                                                    checked={room.isActive}
+                                                    onChange={() => handleStatusToggle(room.id, !room.isActive)}
+                                                />
+                                                <label className="form-check-label px-0">
+                                                    {room.isActive ? 'Active' : 'Deactive'}
+                                                </label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
                                         </table>
                                     </div>
                                     <nav className="d-flex justify-content-between align-items-center mt-3">
                                         <div>
                                             <span>
-                                                Page {currentPage} of {totalPages} | Total Records: {totalRecords}
+                                            Page {currentPage} of {totalPages} | Total Records: {totalRecords}
                                             </span>
                                         </div>
                                         <ul className="pagination mb-0">
@@ -241,9 +259,9 @@ const RoomType = () => {
 
                                     <div className="form-group col-md-12 d-flex justify-content-end">
                                         <button type="submit" className="btn btn-primary me-2" disabled={!nameInput.trim()}>
-                                            
+
                                             {editingRoom ? 'Update' : 'Submit'}
-                                            
+
                                         </button>
                                         <button
                                             type="button"
