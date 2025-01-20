@@ -12,6 +12,11 @@ const Amenities = () => {
   const [loading, setLoading] = useState(false)
   const [totalPages, setTotalPages] = useState(1)
   const resultsPerPage = 10
+  const filesPerPage = 10
+
+
+
+
   const [searchTerm, setSearchTerm] = useState("")
 
   // ... existing code ...
