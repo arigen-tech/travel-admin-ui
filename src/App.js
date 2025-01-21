@@ -17,6 +17,7 @@ import Policy from './views/PackagePages/PackageMaster/Policy/index';
 import Tagcategory from './views/PackagePages/PackageMaster/TagCategory/index';
 import Tag from './views/CmsPages/Home/Tag/index';
 import Tagwisepackage from './views/PackagePages/PackageMaster/TagWisePackage/index';
+import Rooms from './views/CmsPages/Hotel/Rooms';
 
 const Layout =  React.lazy(() => import('./views/layout/index'));
 const Dashboard = React.lazy(() => import('./views/Dashboard/index'));
@@ -49,7 +50,7 @@ function App() {
             <Route path="/Amenities" element={<Amenities/>} />
             <Route path="/RoomType" element={<RoomType/>} />
             <Route path="/Hotelsettings" element={<Hotelsettings/>} />
-            {/*<Route path="/Rooms" element={<Rooms/>} />*/}
+            <Route path="/Rooms" element={<Rooms/>} />
             <Route path="/mealPlan" element={<Mealplan/>} />
             <Route path="/facilities" element={<Facilities/>} />
             <Route path="Similarhotel" element={<Similarhotel/>} />
