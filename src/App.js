@@ -7,7 +7,6 @@ import Hoteldetails from './views/CmsPages/Hotel/Hotel details/index';
 import Amenities from './views/CmsPages/Hotel/Amenities/index';
 import RoomType from './views/CmsPages/Hotel/RoomType/index';
 import Hotelsettings from './views/CmsPages/Hotel/HotelSettings/index';
-// import Rooms from './views/CmsPages/Hotel/Rooms/index';
 import Mealplan from './views/CmsPages/Hotel/Mealplan/index';
 import Facilities from './views/CmsPages/Hotel/Facilities/index';
 import Similarhotel from './views/CmsPages/Hotel/SimilarHotel/index';
@@ -17,6 +16,14 @@ import Policy from './views/PackagePages/PackageMaster/Policy/index';
 import Tagcategory from './views/PackagePages/PackageMaster/TagCategory/index';
 import Tag from './views/CmsPages/Home/Tag/index';
 import Tagwisepackage from './views/PackagePages/PackageMaster/TagWisePackage/index';
+import Addpage from './views/CmsPages/Home/AddPage';
+import Manageservices from './views/CmsPages/Home/Manage Services';
+import Activities from './views/CmsPages/Destination/Activities';
+import Destinationhotel from './views/CmsPages/Destination/DestinationHotel';
+import Destinationpackages from './views/CmsPages/Destination/DestinationPackages';
+import Rooms from './views/CmsPages/Hotel/Rooms';
+// import Destination from './views/CmsPages/Hotel/Destination';
+
 
 const Layout =  React.lazy(() => import('./views/layout/index'));
 const Dashboard = React.lazy(() => import('./views/Dashboard/index'));
@@ -49,7 +56,7 @@ function App() {
             <Route path="/Amenities" element={<Amenities/>} />
             <Route path="/RoomType" element={<RoomType/>} />
             <Route path="/Hotelsettings" element={<Hotelsettings/>} />
-            {/*<Route path="/Rooms" element={<Rooms/>} />*/}
+            <Route path="/Rooms" element={<Rooms/>} />
             <Route path="/mealPlan" element={<Mealplan/>} />
             <Route path="/facilities" element={<Facilities/>} />
             <Route path="Similarhotel" element={<Similarhotel/>} />
@@ -59,7 +66,12 @@ function App() {
             <Route path="/Tagcategory" element={<Tagcategory/>} />
             <Route path="/Tag" element={<Tag/>} />
             <Route path="/Tagwisepackage" element={<Tagwisepackage/>} />
-
+            <Route path="/AddPage" element={<Addpage/>} />
+            <Route path="/ManageServices" element={<Manageservices/>} />
+            <Route path="/Activities" element={<Activities/>} />
+            <Route path="/Destinationhotel" element={<Destinationhotel/>} />
+            <Route path="/Destinationpackages" element={<Destinationpackages/>} />
+            {/* <Route path="/Destination" element={<Destination/>} /> */}
             
  
 
