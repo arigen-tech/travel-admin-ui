@@ -7,7 +7,12 @@ import {
   getRequest,
   putRequest,
 } from "../../../../service/apiService.js";
-import { TAG_WISE, TAG_WISES, API_HOST, tableImage } from "../../../../config/apiConfig";
+import {
+  TAG_WISE,
+  TAG_WISES,
+  API_HOST,
+  tableImage,
+} from "../../../../config/apiConfig";
 import Popup from "../../../../components/popup";
 
 const Tag = () => {
@@ -404,25 +409,29 @@ const Tag = () => {
                                 }}
                               ></td>
 
-                              <td>
-                                <img
-                                  src={item.bannerImg.replace(
-                                    `${tableImage}`,
-                                    `${API_HOST}/`
-                                  )}
-                                  alt="Banner"
-                                  className="w-35 h-35 "
-                                />
+                              <td className="border border-gray-300 px-4 py-2">
+                                <div className="flex justify-center items-center">
+                                  <img
+                                    src={item.bannerImg.replace(
+                                      `${tableImage}`,
+                                      `${API_HOST}/`
+                                    )}
+                                    alt="Banner"
+                                    className="w-40 h-24 object-cover rounded shadow-md"
+                                  />
+                                </div>
                               </td>
-                              <td>
-                                <img
-                                  src={item.thumbImg.replace(
-                                    `${tableImage}`,
-                                    `${API_HOST}/`
-                                  )}
-                                  alt="Thumbnail"
-                                  className="w-20 h-20 object-cover border rounded-md"
-                                />
+                              <td className="border border-gray-300 px-4 py-2">
+                                <div className="flex justify-center items-center">
+                                  <img
+                                    src={item.thumbImg.replace(
+                                      `${tableImage}`,
+                                      `${API_HOST}/`
+                                    )}
+                                    alt="Thumbnail"
+                                    className="w-40 h-24 object-cover rounded shadow-md"
+                                  />
+                                </div>
                               </td>
 
                               <td>
