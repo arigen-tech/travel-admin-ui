@@ -58,7 +58,9 @@ const Sidebar = () => {
                 <ul className="nav flex-column sub-menu">
                   <li className="nav-item"><Link className="nav-link" href="#">Special Packages</Link></li>
                   <li className="nav-item"><Link className="nav-link" href="#">Banner</Link></li>
+                  {/* <li className={`nav-item ${isActive('Destination') ? 'active' : ''}`}><Link className="nav-link" to="/Destination">Destination</Link></li> */}
                   <li className="nav-item"><Link className="nav-link" href="#">Destination</Link></li>
+
                   <li className="nav-item"><Link className="nav-link" href="#">Offers</Link></li>
                   <li className={`nav-item ${isActive('Tag') ? 'active' : ''}`}><Link className="nav-link" to="/Tag">Tag</Link></li>
 
@@ -67,10 +69,11 @@ const Sidebar = () => {
                   <li className="nav-item"><Link className="nav-link" href="#">Blogs</Link></li>
                   <li className="nav-item"><Link className="nav-link" href="#">Testimonial</Link></li>
 
-                  <li className="nav-item"><Link className="nav-link" href="#">Add Page</Link></li>
+                  <li className={`nav-item ${isActive('AddPage') ? 'active' : ''}`}><Link className="nav-link" to="/AddPage">Add Page</Link></li>
+                  <li className={`nav-item ${isActive('ManageServices') ? 'active' : ''}`}><Link className="nav-link" to="/ManageServices">Manage Services</Link></li>
 
 
-                  <li className="nav-item"><Link className="nav-link" href="#">Manage Services</Link></li>
+
                   <li className="nav-item"><Link className="nav-link" href="#">Manage About Us</Link></li>
                   <li className="nav-item"><Link className="nav-link" href="#">Manage Contact Us</Link></li>
                   <li className="nav-item"><Link className="nav-link" href="#">Similar Packages</Link></li>
@@ -117,6 +120,8 @@ const Sidebar = () => {
                   <li className={`nav-item ${isActive('roomType') ? 'active' : ''}`}><Link className="nav-link" to="/roomType">Room Type</Link></li>
 
                   <li className={`nav-item ${isActive('rooms') ? 'active' : ''}`}><Link className="nav-link" to="/rooms">Rooms</Link></li>
+                  {/* <li className="nav-item"><Link className="nav-link" href="#">Rooms</Link></li> */}
+
 
                   <li className={`nav-item ${isActive('similarHotel') ? 'active' : ''}`}><Link className="nav-link" to="/similarHotel">Similar Hotel</Link></li>
 
@@ -215,9 +220,12 @@ const Sidebar = () => {
               </a>
               <div className="collapse" id="destination">
                 <ul className="nav flex-column sub-menu">
-                  <li className="nav-item"><Link className="nav-link" href="#">Activities</Link></li>
-                  <li className="nav-item"><Link className="nav-link" href="#">Destination Hotel</Link></li>
-                  <li className="nav-item"><Link className="nav-link" href="#">Destination Packages</Link></li>
+                  <li className={`nav-item ${isActive('Activities') ? 'active' : ''}`}><Link className="nav-link" to="/Activities">Activities</Link></li>
+                  <li className={`nav-item ${isActive('Destinationhotel') ? 'active' : ''}`}><Link className="nav-link" to="/Destinationhotel">Destination Hotel</Link></li>
+
+
+                  <li className={`nav-item ${isActive('Destinationpackages') ? 'active' : ''}`}><Link className="nav-link" to="/Destinationpackages">Destination Packages</Link></li>
+
                   <li className="nav-item"><Link className="nav-link" href="#">Location</Link></li>
                 </ul>
               </div>
