@@ -7,9 +7,8 @@ import {
   getRequest,
   putRequest,
 } from "../../../../service/apiService.js";
-import { TAG_WISE, TAG_WISES, API_HOST } from "../../../../config/apiConfig";
+import { TAG_WISE, TAG_WISES, API_HOST, tableImage } from "../../../../config/apiConfig";
 import Popup from "../../../../components/popup";
-import image from "../../../../asset/images/Animation - 1735037321858.gif";
 
 const Tag = () => {
   const [formData, setFormData] = useState({
@@ -407,16 +406,22 @@ const Tag = () => {
 
                               <td>
                                 <img
-                                  src={item.bannerImg}
+                                  src={item.bannerImg.replace(
+                                    `${tableImage}`,
+                                    `${API_HOST}/`
+                                  )}
                                   alt="Banner"
-                                  className="w-20 h-20 object-cover"
+                                  className="w-35 h-35 "
                                 />
                               </td>
                               <td>
                                 <img
-                                  src={item.thumbImg}
+                                  src={item.thumbImg.replace(
+                                    `${tableImage}`,
+                                    `${API_HOST}/`
+                                  )}
                                   alt="Thumbnail"
-                                  className="w-20 h-20 object-cover"
+                                  className="w-20 h-20 object-cover border rounded-md"
                                 />
                               </td>
 

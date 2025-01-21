@@ -12,7 +12,7 @@ const Login = () => {
         // Add your login logic here
         const response = await postRequest(LOGIN, formData);
         const loginResp=response.response;
-        debugger;
+        // debugger;
         if(loginResp.jwtToken){
             if(formData.rememberMe){
                 localStorage.setItem('token',loginResp.jwtToken);
@@ -35,7 +35,7 @@ const Login = () => {
             ...prevFormData,
             [name]: type === "checkbox" ? checked : value,
         }));
-        debugger;
+        // debugger;
     };
 
 

@@ -103,7 +103,7 @@ const Inclusions = () => {
         console.error("Error adding inclusion:", error);
         showPopup(
           error.response?.message ||
-          "An error occurred while adding the inclusion.",
+            "An error occurred while adding the inclusion.",
           "error"
         );
       }
@@ -159,7 +159,8 @@ const Inclusions = () => {
     } catch (error) {
       console.error("Error updating inclusion:", error);
       showPopup(
-        error?.response?.message || "An error occurred while updating the inclusion.",
+        error?.response?.message ||
+          "An error occurred while updating the inclusion.",
         "error"
       );
     }
@@ -181,7 +182,10 @@ const Inclusions = () => {
       );
 
       if (response.status === 200) {
-        showPopup(response.message || "Status updated successfully!", "success");
+        showPopup(
+          response.message || "Status updated successfully!",
+          "success"
+        );
         fetchInclusionData();
         setShowConfirmation(false);
         setSelectedItem(null);
@@ -195,7 +199,8 @@ const Inclusions = () => {
     } catch (error) {
       console.error("Error updating status:", error);
       showPopup(
-        error?.response?.message || "An error occurred while updating the status.",
+        error?.response?.message ||
+          "An error occurred while updating the status.",
         "error"
       );
     }
@@ -214,11 +219,12 @@ const Inclusions = () => {
   };
 
   const filterInclusions = (inclusions) => {
-    if (!searchTerm.trim()) return inclusions; 
-    return inclusions.filter((item) =>
-      item.inclusionName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.inclusionDesc?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.status?.toLowerCase().includes(searchTerm.toLowerCase())
+    if (!searchTerm.trim()) return inclusions;
+    return inclusions.filter(
+      (item) =>
+        item.inclusionName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.inclusionDesc?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.status?.toLowerCase().includes(searchTerm.toLowerCase())
     );
   };
 
@@ -227,7 +233,10 @@ const Inclusions = () => {
   const filteredTotalPages = Math.ceil(totalFilteredProducts / resultsPerPage);
   const indexOfLastInclusion = currentPage * resultsPerPage;
   const indexOfFirstInclusion = indexOfLastInclusion - resultsPerPage;
-  const currentInclusions = filteredInclusions.slice(indexOfFirstInclusion, indexOfLastInclusion);
+  const currentInclusions = filteredInclusions.slice(
+    indexOfFirstInclusion,
+    indexOfLastInclusion
+  );
 
   return (
     <div className="content-wrapper">
@@ -305,10 +314,16 @@ const Inclusions = () => {
                             <tr key={item.id}>
                               <td>{indexOfFirstInclusion + index + 1}</td>
                               <td>{item.inclusionName}</td>
-                              <td dangerouslySetInnerHTML={{ __html: item.inclusionDesc }}></td>
+                              <td
+                                dangerouslySetInnerHTML={{
+                                  __html: item.inclusionDesc,
+                                }}
+                              ></td>
                               <td>
                                 <button
-                                  className={`btn btn-sm btn-success me-2 ${item.status === "n" ? "disabled" : ""}`}
+                                  className={`btn btn-sm btn-success me-2 ${
+                                    item.status === "n" ? "disabled" : ""
+                                  }`}
                                   disabled={item.status === "n"}
                                   onClick={() => {
                                     if (item.status === "y") {
@@ -355,13 +370,15 @@ const Inclusions = () => {
                   <nav className="d-flex justify-content-between align-items-center mt-3">
                     <div>
                       <span>
-                        Page {currentPage} of {filteredTotalPages} | Total Records:{" "}
-                        {totalFilteredProducts}
+                        Page {currentPage} of {filteredTotalPages} | Total
+                        Records: {totalFilteredProducts}
                       </span>
                     </div>
                     <ul className="pagination mb-0">
                       <li
-                        className={`page-item ${currentPage === 1 ? "disabled" : ""}`}
+                        className={`page-item ${
+                          currentPage === 1 ? "disabled" : ""
+                        }`}
                       >
                         <button className="page-link" onClick={handlePrevious}>
                           &laquo;
@@ -369,7 +386,9 @@ const Inclusions = () => {
                       </li>
                       {[...Array(filteredTotalPages)].map((_, index) => (
                         <li
-                          className={`page-item ${currentPage === index + 1 ? "active" : ""}`}
+                          className={`page-item ${
+                            currentPage === index + 1 ? "active" : ""
+                          }`}
                           key={index}
                         >
                           <button
@@ -381,7 +400,9 @@ const Inclusions = () => {
                         </li>
                       ))}
                       <li
-                        className={`page-item ${currentPage === filteredTotalPages ? "disabled" : ""}`}
+                        className={`page-item ${
+                          currentPage === filteredTotalPages ? "disabled" : ""
+                        }`}
                       >
                         <button className="page-link" onClick={handleNext}>
                           &raquo;
@@ -402,7 +423,9 @@ const Inclusions = () => {
                       }
                     >
                       <div className="form-group col-md-4">
-                        <label htmlFor="inclusionName">Inclusion Name  <span className="text-danger">*</span></label>
+                        <label htmlFor="inclusionName">
+                          Inclusion Name <span className="text-danger">*</span>
+                        </label>
                         <input
                           type="text"
                           required
@@ -459,7 +482,11 @@ const Inclusions = () => {
                       </div>
 
                       <div className="form-group col-md-12 d-flex justify-content-end">
-                        <button type="submit" className="btn btn-primary me-2" disabled={!formData.inclusionName}>
+                        <button
+                          type="submit"
+                          className="btn btn-primary me-2"
+                          disabled={!formData.inclusionName}
+                        >
                           {editMode ? "Save Changes" : "Submit"}
                         </button>
                         <button
@@ -489,7 +516,8 @@ const Inclusions = () => {
               <div className="modal-body">
                 <p className="text-lg mb-4 text-center">
                   Are you sure you want to{" "}
-                  <strong>{newStatus ? "Activate" : "Deactivate"}</strong> To <strong>{itemName}</strong> ?
+                  <strong>{newStatus ? "Activate" : "Deactivate"}</strong> To{" "}
+                  <strong>{itemName}</strong> ?
                 </p>
               </div>
               <div className="modal-footer">
@@ -517,4 +545,3 @@ const Inclusions = () => {
 };
 
 export default Inclusions;
-
