@@ -112,7 +112,7 @@ const Sidebar = () => {
               <div className="collapse" id="hotels">
                 <ul className="nav flex-column sub-menu">
                   <li className={`nav-item ${isActive('Amenities') ? 'active' : ''}`}><Link className="nav-link" to="/Amenities">Amenities</Link></li>
-                  <li className={`nav-item ${isActive('Facilitycategory') ? 'active' : ''}`}><Link className="nav-link" to="/Facilitycategory">Facility Category</Link></li>
+                  <li className={`nav-item ${isActive('Facilitycategory') ? 'active' : ''}`}><Link className="nav-link" to="/Facilitycategory">Facilities Category</Link></li>
 
 
                   <li className={`nav-item ${isActive('facilities') ? 'active' : ''}`}><Link className="nav-link" to="/facilities">Facilities</Link></li>
