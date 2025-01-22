@@ -17,12 +17,16 @@ import Tagcategory from './views/PackagePages/PackageMaster/TagCategory/index';
 import Tag from './views/CmsPages/Home/Tag/index';
 import Tagwisepackage from './views/PackagePages/PackageMaster/TagWisePackage/index';
 import Rooms from './views/CmsPages/Hotel/Rooms';
+import Facilitycategory from './views/CmsPages/Hotel/FacilityCategory';
+
+
+
 // import Addpage from './views/CmsPages/Home/AddPage';
 // import Manageservices from './views/CmsPages/Home/Manage Services';
 // import Activities from './views/CmsPages/Destination/Activities';
 // import Destinationhotel from './views/CmsPages/Destination/DestinationHotel';
 // import Destinationpackages from './views/CmsPages/Destination/DestinationPackages';
-// import Destination from './views/CmsPages/Hotel/Destination';
+// import Destination from './views/CmsPages/Home/Destination';
 
 
 const Layout =  React.lazy(() => import('./views/layout/index'));
@@ -66,14 +70,16 @@ function App() {
             <Route path="/Tagcategory" element={<Tagcategory/>} />
             <Route path="/Tag" element={<Tag/>} />
             <Route path="/Tagwisepackage" element={<Tagwisepackage/>} />
-            {/* <Route path="/AddPage" element={<Addpage/>} />
+            <Route path="Facilitycategory" element={<Facilitycategory/>} />
+
+
+             {/* <Route path="/AddPage" element={<Addpage/>} />
             <Route path="/ManageServices" element={<Manageservices/>} />
-            <Route path="/Activities" element={<Activities/>} /> */}
-            {/* <Route path="/Destinationhotel" element={<Destinationhotel/>} />
-            <Route path="/Destinationpackages" element={<Destinationpackages/>} /> */}
-            {/* <Route path="/Destination" element={<Destination/>} /> */}
-            
- 
+            <Route path="/Activities" element={<Activities/>} /> 
+             <Route path="/Destinationhotel" element={<Destinationhotel/>} />
+            <Route path="/Destinationpackages" element={<Destinationpackages/>} /> 
+             <Route path="/Destination" element = {<Destination/>} />
+  */}
 
           </Route>
         </Routes>
