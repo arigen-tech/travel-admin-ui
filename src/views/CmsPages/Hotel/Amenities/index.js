@@ -151,11 +151,8 @@ const Amenities = () => {
       showPopup("Please fill out all required fields.", "warning");
       return;
     }
-console.log("befor formData.iconPath", formData.iconPath);
     if (!formData.iconPath) {
       showPopup("Please upload an image.", "warning");
-console.log(" formData.iconPath", formData.iconPath);
-
       return;
     }
 

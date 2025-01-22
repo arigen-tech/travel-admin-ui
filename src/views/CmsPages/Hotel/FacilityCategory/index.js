@@ -6,13 +6,13 @@ import {
   postRequest,
   putRequest,
 } from "../../../../service/apiService";
-import { INCLUSION } from "../../../../config/apiConfig";
+import { FACILITY_CATEGORY } from "../../../../config/apiConfig";
 import Popup from "../../../../components/popup";
 
 const Facilitycategory = () => {
   const [formData, setFormData] = useState({
-    inclusionName: "",
-    inclusionDesc: "",
+    categoryName: "",
+    description: "",
   });
   const [editMode, setEditMode] = useState(false);
   const [popup, setPopup] = useState("");
@@ -21,41 +21,41 @@ const Facilitycategory = () => {
   const [showForm, setShowForm] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [inclusionData, setInclusionData] = useState([]);
+  const [categoryData, setCategoryData] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [newStatus, setNewStatus] = useState(false);
   const [itemName, setItemName] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const inclusionRef = useRef(null);
+  const categoryRef = useRef(null);
   const editorRef = useRef(null);
   const resultsPerPage = 10;
 
-  const fetchInclusionData = async () => {
+  const fetchCategoryData = async () => {
     setLoading(true);
 
-    const GETALL = "/masterController/getAllInclusions";
+    const GETALL = "/masterController/getAllHotelFacilitiesCat";
 
     try {
       const data = await getRequest(GETALL);
       if (data.status === 200 && Array.isArray(data.response)) {
-        setInclusionData(data.response);
+        setCategoryData(data.response);
         setTotalPages(Math.ceil(data.response.length / resultsPerPage));
       } else {
         console.error("Unexpected API response format:", data);
-        setInclusionData([]);
+        setCategoryData([]);
         setTotalPages(1);
       }
     } catch (error) {
-      console.error("Error fetching inclusion data:", error);
+      console.error("Error fetching category data:", error);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchInclusionData();
+    fetchCategoryData();
   }, []);
 
   useEffect(() => {
@@ -76,34 +76,34 @@ const Facilitycategory = () => {
   const handleCreateFormSubmit = async (e) => {
     e.preventDefault();
 
-    if (formData.inclusionName && formData.inclusionDesc) {
-      const newInclusionType = {
-        inclusionName: formData.inclusionName,
-        inclusionDesc: formData.inclusionDesc,
+    if (formData.categoryName && formData.description) {
+      const newCategoryType = {
+        categoryName: formData.categoryName,
+        description: formData.description,
       };
 
       try {
-        const response = await postRequest(INCLUSION, newInclusionType);
+        const response = await postRequest(FACILITY_CATEGORY, newCategoryType);
 
         if (response.status === 200) {
           showPopup(
-            response.message || "Inclusion added successfully!",
+            response.message || "category added successfully!",
             "success"
           );
-          setFormData({ inclusionName: "", inclusionDesc: "" });
+          setFormData({ categoryName: "", description: "" });
           setShowForm(false);
-          fetchInclusionData();
+          fetchCategoryData();
         } else {
           showPopup(
-            response.message || "Failed to add inclusion. Please try again.",
+            response.message || "Failed to add category. Please try again.",
             "error"
           );
         }
       } catch (error) {
-        console.error("Error adding inclusion:", error);
+        console.error("Error adding category:", error);
         showPopup(
           error.response?.message ||
-            "An error occurred while adding the inclusion.",
+            "An error occurred while adding the category.",
           "error"
         );
       }
@@ -123,13 +123,13 @@ const Facilitycategory = () => {
 
   const handleEditorChange = (event, editor) => {
     const data = editor.getData();
-    setFormData((prevData) => ({ ...prevData, inclusionDesc: data }));
+    setFormData((prevData) => ({ ...prevData, description: data }));
   };
 
   const handleEdit = (item) => {
     setFormData({
-      inclusionName: item.inclusionName,
-      inclusionDesc: item.inclusionDesc,
+      categoryName: item.categoryName,
+      description: item.description,
     });
     setEditId(item.id);
     setEditMode(true);
@@ -139,37 +139,37 @@ const Facilitycategory = () => {
   const handleUpdateFormSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await putRequest(`${INCLUSION}/${editId}`, formData);
+      const response = await putRequest(`${FACILITY_CATEGORY}/${editId}`, formData);
       if (response.status === 200) {
         showPopup(
-          response?.message || "Inclusion updated successfully!",
+          response?.message || "category updated successfully!",
           "success"
         );
-        fetchInclusionData();
+        fetchCategoryData();
         setShowForm(false);
         setEditMode(false);
         setEditId(null);
-        setFormData({ inclusionName: "", inclusionDesc: "" });
+        setFormData({ categoryName: "", description: "" });
       } else {
         showPopup(
-          response?.message || "Failed to update inclusion. Please try again.",
+          response?.message || "Failed to update category. Please try again.",
           "error"
         );
       }
     } catch (error) {
-      console.error("Error updating inclusion:", error);
+      console.error("Error updating category:", error);
       showPopup(
         error?.response?.message ||
-          "An error occurred while updating the inclusion.",
+          "An error occurred while updating the category.",
         "error"
       );
     }
   };
 
-  const handleStatusChange = (id, status, inclusionName) => {
+  const handleStatusChange = (id, status, categoryName) => {
     setSelectedItem(id);
     setNewStatus(status);
-    setItemName(inclusionName);
+    setItemName(categoryName);
     setShowConfirmation(true);
   };
 
@@ -178,7 +178,7 @@ const Facilitycategory = () => {
     try {
       const status = newStatus ? "y" : "n";
       const response = await putRequest(
-        `${INCLUSION}/status/${selectedItem}?status=${status}`
+        `${FACILITY_CATEGORY}/status/${selectedItem}?status=${status}`
       );
 
       if (response.status === 200) {
@@ -186,7 +186,7 @@ const Facilitycategory = () => {
           response.message || "Status updated successfully!",
           "success"
         );
-        fetchInclusionData();
+        fetchCategoryData();
         setShowConfirmation(false);
         setSelectedItem(null);
         setNewStatus(false);
@@ -218,24 +218,24 @@ const Facilitycategory = () => {
     }
   };
 
-  const filterInclusions = (inclusions) => {
-    if (!searchTerm.trim()) return inclusions;
-    return inclusions.filter(
+  const filterCategories = (categories) => {
+    if (!searchTerm.trim()) return categories;
+    return categories.filter(
       (item) =>
-        item.inclusionName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.inclusionDesc?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.categoryName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.status?.toLowerCase().includes(searchTerm.toLowerCase())
     );
   };
 
-  const filteredInclusions = filterInclusions(inclusionData);
-  const totalFilteredProducts = filteredInclusions.length;
+  const filteredCategories = filterCategories(categoryData);
+  const totalFilteredProducts = filteredCategories.length;
   const filteredTotalPages = Math.ceil(totalFilteredProducts / resultsPerPage);
-  const indexOfLastInclusion = currentPage * resultsPerPage;
-  const indexOfFirstInclusion = indexOfLastInclusion - resultsPerPage;
-  const currentInclusions = filteredInclusions.slice(
-    indexOfFirstInclusion,
-    indexOfLastInclusion
+  const indexOfLastCategory = currentPage * resultsPerPage;
+  const indexOfFirstCategory = indexOfLastCategory - resultsPerPage;
+  const currentCategories = filteredCategories.slice(
+    indexOfFirstCategory,
+    indexOfLastCategory
   );
 
   return (
@@ -309,14 +309,14 @@ const Facilitycategory = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {currentInclusions.length > 0 ? (
-                          currentInclusions.map((item, index) => (
+                        {currentCategories.length > 0 ? (
+                          currentCategories.map((item, index) => (
                             <tr key={item.id}>
-                              <td>{indexOfFirstInclusion + index + 1}</td>
-                              <td>{item.inclusionName}</td>
+                              <td>{indexOfFirstCategory + index + 1}</td>
+                              <td>{item.categoryName}</td>
                               <td
                                 dangerouslySetInnerHTML={{
-                                  __html: item.inclusionDesc,
+                                  __html: item.description,
                                 }}
                               ></td>
                               <td>
@@ -344,7 +344,7 @@ const Facilitycategory = () => {
                                       handleStatusChange(
                                         item.id,
                                         item.status !== "y",
-                                        item.inclusionName
+                                        item.categoryName
                                       )
                                     }
                                   />
@@ -423,28 +423,28 @@ const Facilitycategory = () => {
                       }
                     >
                       <div className="form-group col-md-4">
-                        <label htmlFor="inclusionName">
+                        <label htmlFor="categoryName">
                           Facility Category Name <span className="text-danger">*</span>
                         </label>
                         <input
                           type="text"
                           required
                           className="form-control"
-                          id="inclusionName"
+                          id="categoryName"
                           placeholder="Facility Category Name"
                           onChange={handleInputChange}
-                          value={formData.inclusionName}
+                          value={formData.categoryName}
                         />
                       </div>
 
                       <div className="form-group col-md-12">
-                        <label htmlFor="inclusion-editor">
-                            Facility Category Name Description
+                        <label htmlFor="category-editor">
+                            Facility Category Description
                         </label>
-                        <div ref={inclusionRef}></div>
+                        <div ref={categoryRef}></div>
                         <CKEditor
                           editor={DecoupledEditor}
-                          data={formData.inclusionDesc}
+                          data={formData.description}
                           config={{
                             toolbar: { shouldNotGroupWhenFull: true },
                             alignment: {
@@ -463,7 +463,7 @@ const Facilitycategory = () => {
                           onReady={(editor) => {
                             editorRef.current = editor;
 
-                            const toolbarContainer = inclusionRef.current;
+                            const toolbarContainer = categoryRef.current;
                             toolbarContainer.innerHTML = "";
                             toolbarContainer.appendChild(
                               editor.ui.view.toolbar.element
@@ -485,7 +485,7 @@ const Facilitycategory = () => {
                         <button
                           type="submit"
                           className="btn btn-primary me-2"
-                          disabled={!formData.inclusionName}
+                          disabled={!formData.categoryName}
                         >
                           {editMode ? "Save Changes" : "Submit"}
                         </button>
