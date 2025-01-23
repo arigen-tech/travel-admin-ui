@@ -356,9 +356,8 @@ const Hoteldetails = () => {
                     </div>
                     <ul className="pagination mb-0">
                       <li
-                        className={`page-item ${
-                          currentPage === 1 ? "disabled" : ""
-                        }`}
+                        className={`page-item ${currentPage === 1 ? "disabled" : ""
+                          }`}
                       >
                         <button className="page-link" onClick={handlePrevious}>
                           &laquo;
@@ -366,9 +365,8 @@ const Hoteldetails = () => {
                       </li>
                       {[...Array(totalPages)].map((_, index) => (
                         <li
-                          className={`page-item ${
-                            currentPage === index + 1 ? "active" : ""
-                          }`}
+                          className={`page-item ${currentPage === index + 1 ? "active" : ""
+                            }`}
                           key={index}
                         >
                           <button
@@ -380,9 +378,8 @@ const Hoteldetails = () => {
                         </li>
                       ))}
                       <li
-                        className={`page-item ${
-                          currentPage === totalPages ? "disabled" : ""
-                        }`}
+                        className={`page-item ${currentPage === totalPages ? "disabled" : ""
+                          }`}
                       >
                         <button className="page-link" onClick={handleNext}>
                           &raquo;
@@ -622,6 +619,7 @@ const Hoteldetails = () => {
                   </div>
                   <div className="form-group col-md-12">
                     <label>Amenities</label>
+
                     <div className="row mx-0">
                       {loading ? (
                         <div>Loading amenities...</div>
@@ -645,6 +643,83 @@ const Hoteldetails = () => {
                       )}
                     </div>
                   </div>
+
+
+
+                  {/* start */}
+                  <div className="container mt-4">
+                    <div className="row mb-3 align-items-center">
+                      <div className="col">
+                        <h4 className="mb-0">Amenities</h4>
+                      </div>
+                      <div className="col-auto">
+                        <form className="d-inline-block serachform" role="search">
+                          <div className="input-group searchinput d-flex justify-content-end">
+                            <input
+                              type="search"
+                              className="form-control"
+                              placeholder="Search"
+                              aria-label="Search"
+                              aria-describedby="search-icon"
+                              id="search"
+                            />
+                            <span className="input-group-text" id="search-icon">
+                              <i className="mdi mdi-magnify"></i>
+                            </span>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                  {/* start */}
+                  <div className="col-md-3">
+                    <div className="d-flex align-items-center  p-2 border rounded">
+                      <div className="form-check mb-0">
+                        <input type="checkbox" className="form-check-input" id="testnew" />
+                        <label className="form-check-label" htmlFor="testnew">
+                          test new
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+
+
+                  <div className="container mt-4">
+                    <div className="row mb-3 align-items-center">
+                      <div className="col">
+                        <h4 className="mb-0">Tag</h4>
+                      </div>
+                      <div className="col-auto">
+                        <form className="d-inline-block serachform" role="search">
+                          <div className="input-group searchinput d-flex justify-content-end">
+                            <input
+                              type="search"
+                              className="form-control"
+                              placeholder="Search"
+                              aria-label="Search"
+                              aria-describedby="search-icon"
+                              id="search"
+                            />
+                            <span className="input-group-text" id="search-icon">
+                              <i className="mdi mdi-magnify"></i>
+                            </span>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                  {/* start */}
+                  <div className="col-md-3">
+                    <div className="d-flex align-items-center  p-2 border rounded">
+                      <div className="form-check mb-0">
+                        <input type="checkbox" className="form-check-input" id="tag" />
+                        <label className="form-check-label" htmlFor="tag">
+                          Tag
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+
 
                   <div className="form-group col-md-12">
                     <label>Short Description</label>
