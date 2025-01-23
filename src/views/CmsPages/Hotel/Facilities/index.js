@@ -51,6 +51,7 @@ const Facilities = () => {
       const data = await getRequest(FACILITY);
       if (data.status === 200 && Array.isArray(data.response)) {
         setFacilityData(data.response);
+        console.log(data.response);
         setTotalPages(Math.ceil(data.response?.length / resultsPerPage));
       } else {
         console.error("Unexpected API response format:", data);
@@ -69,7 +70,7 @@ const Facilities = () => {
   const fetchFacilityCategoryData = async () => {
     setLoading(true);
 
-    const GETALL = "/masterController/getAllHotelFacilitiesCat";
+    const GETALL = "/masterController/getAllActiveHotelFacilitiesCat";
 
     try {
       const data = await getRequest(GETALL);
@@ -127,6 +128,7 @@ const Facilities = () => {
       facilityName: formData.facilityName,
       faIconClass: formData.faIconClass,
     };
+    console.log(json);
 
     try {
       const response = await uploadFileWithJson(
@@ -167,7 +169,7 @@ const Facilities = () => {
   const handleEdit = (item) => {
     setFormData({
       facilityName: item.facilityName,
-      categoryId: item.categoryId,
+      categoryId: item?.category?.id,
       catImage: item.catImage,
       faIconClass: item.faIconClass,
     });
@@ -248,12 +250,16 @@ const Facilities = () => {
 
   const confirmStatusChange = async (e) => {
     e.preventDefault();
+    if (!selectedItem) {
+      showPopup("Invalid facility selected. Please try again.", "error");
+      return;
+    }
     try {
       const status = newStatus ? "y" : "n";
       const response = await putRequest(
         `${FACILITY}/status/${selectedItem}?status=${status}`
       );
-
+  
       if (response.status === 200) {
         showPopup(
           response.message || "Status updated successfully!",
@@ -278,6 +284,7 @@ const Facilities = () => {
       );
     }
   };
+  
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -298,8 +305,11 @@ const Facilities = () => {
     }
   };
 
-  const handleCategoryChange = (event) => {
-    setFormData({ ...formData, categoryId: event.target.value });
+  const handleCategoryChange = (categoryId) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      categoryId: categoryId,
+    }));
   };
 
   const handlePrevious = () => {
@@ -353,7 +363,7 @@ const Facilities = () => {
                   <>
                     <form className="d-inline-block serachform" role="search">
                       <div className="input-group searchinput">
-                      <input
+                        <input
                           type="search"
                           className="form-control"
                           placeholder="Search"
@@ -415,7 +425,7 @@ const Facilities = () => {
                             <tr key={item.id}>
                               <td>{indexOfFirstFacility + index + 1}</td>
                               <td>{item.facilityName}</td>
-                              <td>{item?.categoryId}</td>
+                              <td>{item?.category?.categoryName}</td>
                               <td>{item?.faIconClass}</td>
                               <td className="border border-gray-300 px-4 py-2">
                                 <div className="flex justify-center items-center">
@@ -542,7 +552,11 @@ const Facilities = () => {
                               className="form-select"
                               style={{ paddingRight: "40px" }}
                               value={formData.categoryId}
-                              onChange={handleCategoryChange}
+                              onChange={(e) =>
+                                handleCategoryChange(
+                                  parseInt(e.target.value, 10)
+                                )
+                              }
                               disabled={loading}
                             >
                               <option value="">Select Category Type</option>
