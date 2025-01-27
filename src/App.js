@@ -73,13 +73,14 @@ function App() {
             <Route path="Facilitycategory" element={<Facilitycategory/>} />
 
 
-             {/* <Route path="/AddPage" element={<Addpage/>} />
+             
+              {/* <Route path="/AddPage" element={<Addpage/>} />
             <Route path="/ManageServices" element={<Manageservices/>} />
             <Route path="/Activities" element={<Activities/>} /> 
              <Route path="/Destinationhotel" element={<Destinationhotel/>} />
             <Route path="/Destinationpackages" element={<Destinationpackages/>} /> 
              <Route path="/Destination" element = {<Destination/>} />
-  */}
+   */}
 
           </Route>
         </Routes>
