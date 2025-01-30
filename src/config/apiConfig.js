@@ -16,6 +16,7 @@ export const TAG_WISES='/masterController/tagWise';
 export const POLICY='/masterController/policy';
 export const FACILITY_CATEGORY='/masterController/HotelFacilitiesCat';
 export const FACILITY='/masterController/hotel-facilities';
+export const MAS_HOTEL ='/masterController/hotels';
 
 export const LOGIN='/authController/login';
 
