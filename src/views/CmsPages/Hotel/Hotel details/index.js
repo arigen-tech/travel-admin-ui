@@ -50,6 +50,8 @@ const Hoteldetails = () => {
   const [countryData, setCountryData] = useState([]);
   const [stateData, setStateData] = useState([]);
   const [cityData, setCityData] = useState([]);
+  const [countryCodes, setCountryCodes] = useState("");
+  const [stateCodes, setStateCodes] = useState("");
   const [hotelTypeData, setHotelTypeData] = useState([]);
   const [amenityData, setAmenityData] = useState([]);
   const [selectedAmenities, setSelectedAmenities] = useState([]);
@@ -403,7 +405,6 @@ const Hoteldetails = () => {
         hotel.id === id ? { ...hotel, [field]: value } : hotel
       );
 
-      // If there are exactly 2, add a new empty one
       if (updatedHeadingImages.length === 2) {
         updatedHeadingImages.push({
           id: updatedHeadingImages.length + 1,
@@ -474,6 +475,15 @@ const Hoteldetails = () => {
     }
 
     return true;
+  };
+
+  const getFileName = (file) => {
+    if (!file) return "No file chosen";
+    let filename =
+      file instanceof File
+        ? file.name
+        : file.split("/").pop().split("\\").pop();
+    return filename.replace(/^\d+_/, "");
   };
 
   const handleCreateFormSubmit = async (e) => {
@@ -578,7 +588,7 @@ const Hoteldetails = () => {
     }
   };
 
-  console.log(formData);
+  console.log(hotelData);
 
   const handleEdit = (item) => {
     if (!item.id) {
@@ -654,6 +664,15 @@ const Hoteldetails = () => {
         })),
       ],
     }));
+
+    if (item.country?.id) {
+      setCountryCodes(item.country.countryCode);
+      fetchStateData(item.country.countryCode);
+    }
+    if (item.state?.id) {
+      setStateCodes(item.state.stateCode);
+      fetchCityData(item.state.stateCode);
+    }
 
     setEditId(item.id);
     setEditMode(true);
@@ -814,15 +833,20 @@ const Hoteldetails = () => {
     currentPage * resultsPerPage
   );
 
-
   const filterHotels = (hotels) => {
     if (!searchTerm.trim()) return hotels;
     return hotels.filter(
       (item) =>
         item.hotelName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.hotelType?.hotelTypeName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.state?.stateName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.country?.countryName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.hotelType?.hotelTypeName
+          ?.toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
+        item.state?.stateName
+          ?.toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
+        item.country?.countryName
+          ?.toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
         item.city?.cityName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.status?.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -977,8 +1001,8 @@ const Hoteldetails = () => {
                   <nav className="d-flex justify-content-between align-items-center mt-3">
                     <div>
                       <span>
-                      Page {currentPage} of {filteredTotalPages} | Total
-                      Records: {totalFilteredProducts}
+                        Page {currentPage} of {filteredTotalPages} | Total
+                        Records: {totalFilteredProducts}
                       </span>
                     </div>
                     <ul className="pagination mb-0">
@@ -1034,7 +1058,7 @@ const Hoteldetails = () => {
                         <select
                           className="form-select"
                           style={{ paddingRight: "40px" }}
-                          value={formData.categoryId}
+                          value={formData.hotelTypeId}
                           onChange={(e) =>
                             handleHotelTypeChange(parseInt(e.target.value, 10))
                           }
@@ -1115,25 +1139,87 @@ const Hoteldetails = () => {
                       </div>
 
                       <div className="form-group col-md-6">
-                        <label htmlFor="imagePicker">Logo Image</label>
+                        <label htmlFor="logoImg">Logo Image</label>
+
                         <input
                           type="file"
-                          className="form-control"
                           id="logoImg"
                           accept="image/*"
                           onChange={(e) => handleFileChange(e, "logoImg")}
+                          style={{ display: "none" }}
                         />
+
+                        <div className="input-group">
+                          <button
+                            type="button"
+                            className="btn"
+                            style={{
+                              backgroundColor: "#dee2e6",
+                              color: "#000",
+                              border: "1px solid #adb5bd",
+                            }}
+                            onClick={() =>
+                              document.getElementById("logoImg").click()
+                            }
+                          >
+                            Choose File
+                          </button>
+                          <input
+                            type="text"
+                            className="form-control"
+                            value={getFileName(formData.logoImg)}
+                            readOnly
+                            style={{
+                              backgroundColor: "#fff",
+                              cursor: "pointer",
+                            }}
+                            onClick={() =>
+                              document.getElementById("logoImg").click()
+                            }
+                          />
+                        </div>
                       </div>
 
                       <div className="form-group col-md-6">
-                        <label htmlFor="imagePicker">Thumb Image</label>
+                        <label htmlFor="thumbImg">Thum Image</label>
+
                         <input
                           type="file"
-                          className="form-control"
                           id="thumbImg"
                           accept="image/*"
                           onChange={(e) => handleFileChange(e, "thumbImg")}
+                          style={{ display: "none" }}
                         />
+
+                        <div className="input-group">
+                          <button
+                            type="button"
+                            className="btn"
+                            style={{
+                              backgroundColor: "#dee2e6",
+                              color: "#000",
+                              border: "1px solid #adb5bd",
+                            }}
+                            onClick={() =>
+                              document.getElementById("thumbImg").click()
+                            }
+                          >
+                            Choose File
+                          </button>
+                          <input
+                            type="text"
+                            className="form-control"
+                            value={getFileName(formData.thumbImg)}
+                            readOnly
+                            style={{
+                              backgroundColor: "#fff",
+                              cursor: "pointer",
+                            }}
+                            onClick={() =>
+                              document.getElementById("thumbImg").click()
+                            }
+                          />
+                        </div>
                       </div>
 
                       <div className="form-group col-md-4">
@@ -1150,14 +1236,45 @@ const Hoteldetails = () => {
                       </div>
 
                       <div className="form-group col-md-4">
-                        <label htmlFor="imagePicker">Banner Image</label>
+                        <label htmlFor="bannerImg">Banner Image</label>
+
                         <input
                           type="file"
-                          className="form-control"
                           id="bannerImg"
                           accept="image/*"
                           onChange={(e) => handleFileChange(e, "bannerImg")}
+                          style={{ display: "none" }}
                         />
+
+                        <div className="input-group">
+                          <button
+                            type="button"
+                            className="btn"
+                            style={{
+                              backgroundColor: "#dee2e6",
+                              color: "#000",
+                              border: "1px solid #adb5bd",
+                            }}
+                            onClick={() =>
+                              document.getElementById("bannerImg").click()
+                            }
+                          >
+                            Choose File
+                          </button>
+                          <input
+                            type="text"
+                            className="form-control"
+                            value={getFileName(formData.bannerImg)}
+                            readOnly
+                            style={{
+                              backgroundColor: "#fff",
+                              cursor: "pointer",
+                            }}
+                            onClick={() =>
+                              document.getElementById("bannerImg").click()
+                            }
+                          />
+                        </div>
                       </div>
 
                       <div className="form-group col-md-4">
@@ -1213,6 +1330,7 @@ const Hoteldetails = () => {
                               selectedCountry.countryCode,
                               selectedCountry.id
                             );
+                            setCountryCodes(selectedCountry.countryCode);
                           }}
                           disabled={loading}
                         >
@@ -1238,6 +1356,7 @@ const Hoteldetails = () => {
                               selectedState.stateCode,
                               selectedState.id
                             );
+                            setStateCodes(selectedState.stateCode);
                           }}
                           disabled={loading || !formData.countryId}
                         >
@@ -1587,12 +1706,15 @@ const Hoteldetails = () => {
                                 }
                               />
                             </div>
-                            <div className="form-group col-md-4">
+
+                            <div className="form-group col-md-4" key={image.id}>
                               <label>Image File #{index + 1}</label>
+
                               <input
                                 type="file"
-                                className="form-control"
                                 accept="image/*"
+                                id={`imageUpload-${image.id}`}
+                                style={{ display: "none" }}
                                 onChange={(e) =>
                                   handleImageChange(
                                     image.id,
@@ -1601,6 +1723,40 @@ const Hoteldetails = () => {
                                   )
                                 }
                               />
+
+                              <div className="input-group">
+                                <button
+                                  type="button"
+                                  className="btn"
+                                  style={{
+                                    backgroundColor: "#dee2e6",
+                                    color: "#000",
+                                    border: "1px solid #adb5bd",
+                                  }}
+                                  onClick={() =>
+                                    document
+                                      .getElementById(`imageUpload-${image.id}`)
+                                      .click()
+                                  }
+                                >
+                                  Choose File
+                                </button>
+                                <input
+                                  type="text"
+                                  className="form-control"
+                                  value={getFileName(image.imageUrl)}
+                                  readOnly
+                                  style={{
+                                    backgroundColor: "#fff",
+                                    cursor: "pointer",
+                                  }}
+                                  onClick={() =>
+                                    document
+                                      .getElementById(`imageUpload-${image.id}`)
+                                      .click()
+                                  }
+                                />
+                              </div>
                             </div>
                             {index > 0 && (
                               <button
@@ -1658,13 +1814,17 @@ const Hoteldetails = () => {
                                 />
                               </div>
 
-                              {/* Image Input */}
-                              <div className="form-group col-md-4">
+                              <div
+                                className="form-group col-md-4"
+                                key={hotel.id}
+                              >
                                 <label>Image File #{index + 1}</label>
+
                                 <input
                                   type="file"
-                                  className="form-control"
                                   accept="image/*"
+                                  id={`imageUploads-${hotel.id}`}
+                                  style={{ display: "none" }}
                                   onChange={(e) =>
                                     handleHotelFileChange(
                                       hotel.id,
@@ -1673,6 +1833,44 @@ const Hoteldetails = () => {
                                     )
                                   }
                                 />
+
+                                <div className="input-group">
+                                  <button
+                                    type="button"
+                                    className="btn"
+                                    style={{
+                                      backgroundColor: "#dee2e6",
+                                      color: "#000",
+                                      border: "1px solid #adb5bd",
+                                    }}
+                                    onClick={() =>
+                                      document
+                                        .getElementById(
+                                          `imageUploads-${hotel.id}`
+                                        )
+                                        .click()
+                                    }
+                                  >
+                                    Choose File
+                                  </button>
+                                  <input
+                                    type="text"
+                                    className="form-control"
+                                    value={getFileName(hotel.imageUrl)}
+                                    readOnly
+                                    style={{
+                                      backgroundColor: "#fff",
+                                      cursor: "pointer",
+                                    }}
+                                    onClick={() =>
+                                      document
+                                        .getElementById(
+                                          `imageUploads-${hotel.id}`
+                                        )
+                                        .click()
+                                    }
+                                  />
+                                </div>
                               </div>
 
                               <div className="form-group col-md-12">
@@ -1690,7 +1888,7 @@ const Hoteldetails = () => {
                                     toolbar: {
                                       shouldNotGroupWhenFull: true,
                                     },
-                                    id: `description-${index}`, 
+                                    id: `description-${index}`,
                                   }}
                                   onReady={(editor) => {
                                     const toolbarContainer =
