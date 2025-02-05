@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./package.css";
 import MultiStep from "react-multistep";
 import Overview from "../../../components/MultistepForm/Overview";
@@ -7,67 +7,97 @@ import TourGallery from "../../../components/MultistepForm/TourGallery";
 import PackagePolicy from "../../../components/MultistepForm/PackagePolicy";
 import Inclusion from "../../../components/MultistepForm/Inclusion";
 import Pricing from "../../../components/MultistepForm/Pricing";
+import { getRequest } from "../../../service/apiService.js";
+import { PACKAGE } from "../../../config/apiConfig";
 
 const Package = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [showMultiStep, setShowMultiStep] = useState(false);
-  const totalPages = 3;
   const totalProducts = 12;
   const [isActive, setIsActive] = useState(true);
+  const [packageData, setPackageData] = useState([]);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const resultsPerPage = 10;
 
-
-  const data =[
+  const data = [
     {
-      "id": 1,
-      "packageCode": "BR000101",
-      "name": "Ladakh",
-      "daysNights": "7 Days, 6 Nights",
-      "validFrom": "26-Dec-2024",
-      "validTo": "31-Dec-2024",
-      "isActive": true
+      id: 1,
+      packageCode: "BR000101",
+      name: "Ladakh",
+      daysNights: "7 Days, 6 Nights",
+      validFrom: "26-Dec-2024",
+      validTo: "31-Dec-2024",
+      isActive: true,
     },
     {
-      "id": 2,
-      "packageCode": "BR000102",
-      "name": "Manali",
-      "daysNights": "5 Days, 4 Nights",
-      "validFrom": "01-Jan-2025",
-      "validTo": "10-Jan-2025",
-      "isActive": false
+      id: 2,
+      packageCode: "BR000102",
+      name: "Manali",
+      daysNights: "5 Days, 4 Nights",
+      validFrom: "01-Jan-2025",
+      validTo: "10-Jan-2025",
+      isActive: false,
     },
     {
-      "id": 3,
-      "packageCode": "BR000103",
-      "name": "Goa",
-      "daysNights": "4 Days, 3 Nights",
-      "validFrom": "15-Feb-2025",
-      "validTo": "20-Feb-2025",
-      "isActive": true
+      id: 3,
+      packageCode: "BR000103",
+      name: "Goa",
+      daysNights: "4 Days, 3 Nights",
+      validFrom: "15-Feb-2025",
+      validTo: "20-Feb-2025",
+      isActive: true,
     },
     {
-      "id": 4,
-      "packageCode": "BR000104",
-      "name": "Kerala",
-      "daysNights": "6 Days, 5 Nights",
-      "validFrom": "10-Mar-2025",
-      "validTo": "17-Mar-2025",
-      "isActive": false
+      id: 4,
+      packageCode: "BR000104",
+      name: "Kerala",
+      daysNights: "6 Days, 5 Nights",
+      validFrom: "10-Mar-2025",
+      validTo: "17-Mar-2025",
+      isActive: false,
     },
     {
-      "id": 5,
-      "packageCode": "BR000105",
-      "name": "Rajasthan",
-      "daysNights": "8 Days, 7 Nights",
-      "validFrom": "01-Apr-2025",
-      "validTo": "10-Apr-2025",
-      "isActive": true
-    }
+      id: 5,
+      packageCode: "BR000105",
+      name: "Rajasthan",
+      daysNights: "8 Days, 7 Nights",
+      validFrom: "01-Apr-2025",
+      validTo: "10-Apr-2025",
+      isActive: true,
+    },
   ];
-  
+
+  const fetchOverviewData = async () => {
+    setLoading(true);
+    try {
+      const data = await getRequest(PACKAGE);
+      if (data.status === 200 && Array.isArray(data.response)) {
+        setPackageData(data.response);
+        setTotalPages(Math.ceil(data.response?.length / resultsPerPage));
+      } else {
+        console.error("Unexpected API response format:", data);
+        setPackageData([]);
+        setTotalPages(1);
+      }
+    } catch (error) {
+      console.error("Error fetching Package data:", error);
+      setPackageData([]);
+      setTotalPages(1);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchOverviewData();
+  }, []);
 
   const handleSwitchChange = (e) => {
     setIsActive(e.target.checked);
   };
+
   const handlePrevious = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
@@ -107,7 +137,7 @@ const Package = () => {
                     <button
                       type="button"
                       className="btn btn-success me-2"
-                      onClick={() => setShowMultiStep(true)} // Show MultiStep form
+                      onClick={() => setShowMultiStep(true)}
                     >
                       <i className="mdi mdi-plus"></i> Create
                     </button>
@@ -122,7 +152,7 @@ const Package = () => {
                   <button
                     type="button"
                     className="btn btn-secondary"
-                    onClick={() => setShowMultiStep(false)} // Hide MultiStep form
+                    onClick={() => setShowMultiStep(false)}
                   >
                     <i className="mdi mdi-arrow-left"></i> Back
                   </button>
@@ -133,50 +163,76 @@ const Package = () => {
               {!showMultiStep ? (
                 <>
                   <div className="table-responsive packagelist">
-                    <table className="table table-bordered table-hover align-middle">
-                      <thead className="table-light">
-                        <tr>
-                          <th>S.No.</th>
-                          <th>Package Code</th>
-                          <th>Name</th>
-                          <th>Days/Nights</th>
-                          <th>Valid From</th>
-                          <th>Valid To</th>
-                          <th>Action</th>
-                          <th>Status</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {data.map((item, index) => (
-                          <tr key={item.id}>
-                            <td>{index + 1}</td>
-                            <td>{item.packageCode}</td>
-                            <td>{item.name}</td>
-                            <td>{item.daysNights}</td>
-                            <td>{item.validFrom}</td>
-                            <td>{item.validTo}</td>
-                            <td>
-                              <button className="btn btn-sm btn-outline-secondary">
-                                ...
-                              </button>
-                            </td>
-                            <td>
-                              <div className="form-check form-switch">
-                                <input
-                                  className="form-check-input"
-                                  type="checkbox"
-                                  checked={item.isActive}
-                                  onChange={() => handleSwitchChange(item.id)}
-                                />
-                                <label className="form-check-label px-0">
-                                  {item.isActive ? "Active" : "Deactivated"}
-                                </label>
-                              </div>
-                            </td>
+                    {selectedItem ? (
+                      <Overview
+                        item={selectedItem}
+                        onClose={() => setSelectedItem(null)}
+                      />
+                    ) : (
+                      <table className="table table-bordered table-hover align-middle">
+                        <thead className="table-light">
+                          <tr>
+                            <th>S.No.</th>
+                            <th>Package Code</th>
+                            <th>Name</th>
+                            <th>Days/Nights</th>
+                            <th>Valid From</th>
+                            <th>Valid To</th>
+                            <th>Action</th>
+                            <th>Status</th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                        </thead>
+                        <tbody>
+                          {packageData?.map((item, index) => (
+                            <tr key={item.id}>
+                              <td>{index + 1}</td>
+                              <td>{item.pkgCode}</td>
+                              <td>{item.pkgName}</td>
+                              <td>{item.daysNights}</td>
+                              <td>{item.validFrom}</td>
+                              <td>{item.validTo}</td>
+                              <td>
+                                <button
+                                  className={`btn btn-sm btn-success me-2 ${
+                                    item.status === "n" ? "disabled" : ""
+                                  }`}
+                                  disabled={item.status === "n"}
+                                  // onClick={() => {
+                                  //   if (item.status === "y") {
+                                  //     navigate(`/overview`, { state: { item } });
+                                  //   }
+                                  // }}
+                                  onClick={() => setSelectedItem(item)}
+                                >
+                                  <i className="mdi mdi-square-edit-outline"></i>
+                                </button>
+                              </td>
+                              <td>
+                                <div className="form-check form-switch">
+                                  <input
+                                    className="form-check-input"
+                                    type="checkbox"
+                                    checked={item.status === "y"}
+                                    // onChange={() =>
+                                    //   handleStatusChange(
+                                    //     item.id,
+                                    //     item.status !== "y",
+                                    //     item.inclusionName
+                                    //   )
+                                    // }
+                                  />
+                                  <label className="form-check-label px-0">
+                                    {item.status === "y"
+                                      ? "Active"
+                                      : "Deactivated"}
+                                  </label>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    )}
                   </div>
                   <nav className="d-flex justify-content-between align-items-center mt-3">
                     <div>

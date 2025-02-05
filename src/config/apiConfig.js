@@ -18,6 +18,11 @@ export const FACILITY_CATEGORY='/masterController/HotelFacilitiesCat';
 export const FACILITY='/masterController/hotel-facilities';
 export const MAS_HOTEL ='/masterController/hotels';
 
+
+export const ITINERARY ='/masterController/itinerary';
+export const PACKAGE ='/package/packageMaster';
+
+
 export const LOGIN='/authController/login';
 
 export const GET_HOTEL_DETAILS = `/masterController/hotels`;
