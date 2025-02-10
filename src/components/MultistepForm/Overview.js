@@ -1,5 +1,5 @@
 import { useLocation } from "react-router-dom";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, forwardRef, useImperativeHandle } from "react";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import DecoupledEditor from "@ckeditor/ckeditor5-build-decoupled-document";
 import {
@@ -11,7 +11,7 @@ import {
 import Popup from "../../components/popup/index";
 import { ITINERARY, PACKAGE } from "../../config/apiConfig";
 
-const Overview = ({ item }) => {
+const Overview = forwardRef(({ item, onPackageIdUpdate, isActive, ...props  }, ref) => {
   const initialOverviewFormData = {
     pkgName: "",
     seoUrl: "",
@@ -34,7 +34,6 @@ const Overview = ({ item }) => {
   const [overviewFormData, setOverviewFormData] = useState(
     initialOverviewFormData
   );
-
   const [searchTerm, setSearchTerm] = useState("");
   const editorToolbarRef = useRef(null);
   const summaryEditorToolbarRef = useRef(null);
@@ -51,24 +50,30 @@ const Overview = ({ item }) => {
   const [loading, setLoading] = useState(false);
   const [cityData, setCityData] = useState([]);
   const [editId, setEditId] = useState(null);
-
+  const [newPackageId, setNewPackageId] = useState(null);
+  const [totalDayNumber, setTotalDayNumber] = useState(0);
   const location = useLocation();
   const receivedItem = location.state?.item || null;
+  const [modalState, setModalState] = useState({
+    isOpen: false,
+    selectedCity: "",
+    selectedDays: 1,
+  });
 
-  const cities = [
-    { id: 1, name: "New York" },
-    { id: 2, name: "Los Angeles" },
-    { id: 3, name: "Chicago" },
-    { id: 4, name: "Houston" },
-    { id: 5, name: "Phoenix" },
-    { id: 6, name: "Philadelphia" },
-    { id: 7, name: "San Antonio" },
-    { id: 8, name: "San Diego" },
-    { id: 9, name: "Dallas" },
-    { id: 10, name: "San Jose" },
-    { id: 11, name: "Austin" },
-    { id: 12, name: "Jacksonville" },
-  ];
+  const handleModalToggle = (shouldOpen) => {
+    if (shouldOpen) {
+      setModalState((prev) => ({
+        ...prev,
+        isOpen: true,
+      }));
+    } else {
+      setModalState({
+        isOpen: false,
+        selectedCity: "",
+        selectedDays: 1,
+      });
+    }
+  };
 
   useEffect(() => {
     setPackageIncludesData([
@@ -134,9 +139,32 @@ const Overview = ({ item }) => {
     }
   };
 
+  const mergeItinerary = (itinerary) => {
+    const merged = {};
+
+    itinerary.forEach((item) => {
+      const key = item.sequenceColumn;
+
+      if (!merged[key]) {
+        merged[key] = {
+          ids: [item.id],
+          dayNumber: 0,
+          sequenceColumn: item.sequenceColumn,
+          masCity: { ...item.masCity },
+          status: item.status,
+        };
+      } else {
+        merged[key].ids.push(item.id);
+      }
+
+      merged[key].dayNumber += item.dayNumber;
+    });
+
+    return Object.values(merged);
+  };
+
   const onAddCity = (cityId, days) => {
     const cityObject = cityData.find((c) => c.id === Number(cityId));
-
     if (!cityObject) {
       alert("Invalid city selection");
       return;
@@ -145,13 +173,13 @@ const Overview = ({ item }) => {
     setOverviewFormData((prevForm) => ({
       ...prevForm,
       packageItinerary: [
-        ...(prevForm.packageItinerary || []),
+        ...prevForm.packageItinerary,
         {
-          sequenceColumn: (prevForm.packageItinerary?.length || 0) + 1,
+          sequenceColumn: prevForm.packageItinerary.length + 1,
           dayNumber: days,
           masCity: {
             id: cityObject.id,
-            masCityName: cityObject.cityName, // Store city name along with ID
+            cityName: cityObject.cityName,
           },
         },
       ],
@@ -163,49 +191,76 @@ const Overview = ({ item }) => {
   const handleAddCity = (e) => {
     e.preventDefault();
 
-    if (!selectedCity) {
-      alert("Please select a city!");
+    if (!modalState.selectedCity) {
+      showPopup("Please select a city!", "warning");
       return;
     }
 
-    if (!selectedDays || selectedDays < 1) {
-      alert("Please select a valid number of days!");
+    if (!modalState.selectedDays || modalState.selectedDays < 1) {
+      showPopup("Please select a valid number of days!", "warning");
       return;
     }
 
-    const cityIdAsNumber = Number(selectedCity);
+    const cityIdAsNumber = Number(modalState.selectedCity);
 
+    // Check if city already exists in itinerary
     if (
-      overviewFormData?.packageItinerary?.some(
-        (city) => city.masCity === cityIdAsNumber
+      overviewFormData.packageItinerary.some(
+        (city) => city.masCity.id === cityIdAsNumber
       )
     ) {
-      alert("City is already added!");
+      showPopup("City is already added!", "warning");
       return;
     }
 
-    onAddCity(cityIdAsNumber, selectedDays);
-    setCityModalOpen(false);
+    // Add city to itinerary
+    const cityObject = cityData.find((c) => c.id === cityIdAsNumber);
+    if (!cityObject) {
+      showPopup("Invalid city selection", "error");
+      return;
+    }
+
+    setOverviewFormData((prevForm) => ({
+      ...prevForm,
+      packageItinerary: [
+        ...prevForm.packageItinerary,
+        {
+          sequenceColumn: prevForm.packageItinerary.length + 1,
+          dayNumber: modalState.selectedDays,
+          masCity: {
+            id: cityObject.id,
+            cityName: cityObject.cityName,
+          },
+        },
+      ],
+    }));
+
+    setTotalDaysAllocated((prev) => prev + modalState.selectedDays);
+    handleModalToggle(false);
   };
 
   const handleCityChange = (e) => {
-    setSelectedCity(e.target.value);
+    setModalState((prev) => ({
+      ...prev,
+      selectedCity: e.target.value,
+    }));
   };
 
-  console.log(overviewFormData);
-  console.log("recived data", item);
+  const handleDaysChange = (days) => {
+    setModalState((prev) => ({
+      ...prev,
+      selectedDays: days,
+    }));
+  };
 
-  const remainingDays = Math.max(totalPackageDays - totalDaysAllocated, 0);
-  const isSelectCitiesDisabled =
-    numDays === "" || selectedDays <= 0 || remainingDays <= 0;
-
-  const handleRemoveCity = (sequenceColumn) => {
+  const handleRemoveCity = (sequenceColumn, days) => {
     setOverviewFormData((prevForm) => ({
       ...prevForm,
       packageItinerary: prevForm.packageItinerary.filter(
         (city) => city.sequenceColumn !== sequenceColumn
       ),
     }));
+    setTotalDaysAllocated((prevTotal) => Math.max(prevTotal - days, 0));
   };
 
   const handleInputChange = (e) => {
@@ -274,93 +329,49 @@ const Overview = ({ item }) => {
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!overviewFormData.pkgName || !overviewFormData.seoTitle) {
-      showPopup("Please fill out all required fields.", "warning");
-      return;
-    }
-
-    if (!overviewFormData.thumbImg) {
-      showPopup("Please upload an image.", "warning");
-      return;
-    }
-
-    let json = {
-      packageItinerary: overviewFormData.packageItinerary,
-      metaDescription: overviewFormData.metaDescription,
-      metaKeyword: overviewFormData.metaKeyword,
-      numDays: overviewFormData.numDays,
-      ogTag: overviewFormData.ogTag,
-      overviewDesc: overviewFormData.overviewDesc,
-      pkgCode: overviewFormData.pkgCode,
-      packageIncludes: overviewFormData.packageIncludes,
-      pkgName: overviewFormData.pkgName,
-      seoUrl: overviewFormData.seoUrl,
-      tag: overviewFormData.tag,
-      seoTitle: overviewFormData.seoTitle,
-      tourSummary: overviewFormData.tourSummary,
-      youtubeUrl: overviewFormData.youtubeUrl,
-    };
-
-    json.validFrom = new Date(overviewFormData.validFrom).toISOString();
-    json.validTo = new Date(overviewFormData.validTo).toISOString();
-
-    console.log("jsn: ", json);
-
-    try {
-      const response = await uploadFileWithJson(
-        `${PACKAGE}`,
-        json,
-        overviewFormData.thumbImg
-      );
-
-      if (response.status === 200) {
-        showPopup(
-          response.message || "Package submitted successfully!",
-          "success"
-        );
-      } else {
-        showPopup(
-          response?.message ||
-            "Failed to submit the Package. Please try again.",
-          "error"
-        );
-      }
-    } catch (error) {
-      console.error("Error submitting Package:", error);
-      showPopup(
-        error?.message || "An error occurred while submitting the Package.",
-        "error"
-      );
-    }
-  };
 
   useEffect(() => {
     if (item) {
-      setOverviewFormData({
-        packageItinerary: item.packageItinerary,
-        metaDescription: item.metaDescription,
-        metaKeyword: item.metaKeyword,
+      setOverviewFormData((prevForm) => ({
+        ...prevForm,
+        metaDescription: item?.metaDescription || "",
+        metaKeyword: item?.metaKeyword || "",
         numDays: item.numDays,
         ogTag: item.ogTag,
-        overviewDesc: item.overviewDesc,
+        overviewDesc: item?.overviewDesc || "",
         pkgCode: item.pkgCode,
         packageIncludes: item.packageIncludes,
         pkgName: item.pkgName,
         seoUrl: item.seoUrl,
-        tag: item.tag,
+        tag: item.tags,
         seoTitle: item.seoTitle,
-        tourSummary: item.tourSummary,
+        tourSummary: item.tourSummary || "",
         youtubeUrl: item.youtubeUrl,
         validFrom: item.validFrom,
         validTo: item.validTo,
         thumbImg: item.thumbImg,
-      });
+      }));
       setEditId(item.id);
     }
+
+    if (item?.itinerary?.length) {
+      const merged = mergeItinerary(item.itinerary);
+      setOverviewFormData((prevForm) => ({
+        ...prevForm,
+        packageItinerary: merged,
+      }));
+    }
   }, [item]);
+
+  useEffect(() => {
+    if (overviewFormData.packageItinerary?.length) {
+      const totalDays = overviewFormData.packageItinerary.reduce(
+        (sum, city) => sum + city.dayNumber,
+        0
+      );
+      setTotalDayNumber(totalDays);
+    }
+  }, [overviewFormData.packageItinerary]);
 
   const handleUpdateFormSubmit = async (e) => {
     e.preventDefault();
@@ -434,45 +445,99 @@ const Overview = ({ item }) => {
     }
   };
 
-  // const handleStatusChange = (id, status, amenityName) => {
-  //   setSelectedItem(id);
-  //   setNewStatus(status);
-  //   setItemName(amenityName);
-  //   setShowConfirmation(true);
-  // };
+  const handleSubmit = async (e) => {
+    if (e) e.preventDefault();
 
-  // const confirmStatusChange = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     const status = newStatus ? "y" : "n";
-  //     const response = await putRequest(
-  //       `${AMENITIES}/status/${selectedItem}?status=${status}`
-  //     );
+    if (
+      !overviewFormData.pkgName ||
+      !overviewFormData.seoTitle ||
+      !overviewFormData.thumbImg
+    ) {
+      showPopup(
+        "Please fill out all required fields and upload an image.",
+        "warning"
+      );
+      return;
+    }
 
-  //     if (response.status === 200) {
-  //       showPopup(
-  //         response.message || "Status updated successfully!",
-  //         "success"
-  //       );
-  //       fetchAmenityData();
-  //       setShowConfirmation(false);
-  //       setSelectedItem(null);
-  //       setNewStatus(false);
-  //     } else {
-  //       showPopup(
-  //         response?.message || "Failed to update status. Please try again.",
-  //         "error"
-  //       );
-  //     }
-  //   } catch (error) {
-  //     console.error("Error updating status:", error);
-  //     showPopup(
-  //       error?.response?.message ||
-  //         "An error occurred while updating the status.",
-  //       "error"
-  //     );
-  //   }
-  // };
+    if (overviewFormData.packageItinerary.length === 0) {
+      showPopup("Please add at least one city to the itinerary.", "warning");
+      return;
+    }
+
+    let json = {
+      packageItinerary: overviewFormData.packageItinerary,
+      metaDescription: overviewFormData.metaDescription,
+      metaKeyword: overviewFormData.metaKeyword,
+      numDays: overviewFormData.numDays,
+      ogTag: overviewFormData.ogTag,
+      overviewDesc: overviewFormData.overviewDesc,
+      pkgCode: overviewFormData.pkgCode,
+      packageIncludes: overviewFormData.packageIncludes,
+      pkgName: overviewFormData.pkgName,
+      seoUrl: overviewFormData.seoUrl,
+      tag: overviewFormData.tag,
+      seoTitle: overviewFormData.seoTitle,
+      tourSummary: overviewFormData.tourSummary,
+      youtubeUrl: overviewFormData.youtubeUrl,
+      validFrom: new Date(overviewFormData.validFrom).toISOString(),
+      validTo: new Date(overviewFormData.validTo).toISOString(),
+    };
+
+    try {
+      const response = await uploadFileWithJson(
+        `${PACKAGE}`,
+        json,
+        overviewFormData.thumbImg
+      );
+
+      console.log("Full API Response:", response);
+
+      if (response?.status === 200 && response?.response?.id) {
+        showPopup(
+          response?.message || "Package submitted successfully!",
+          "success"
+        );
+
+        const newId = response.response.id;
+        console.log("New package created with ID:", newId);
+
+        if (typeof onPackageIdUpdate === "function") {
+          onPackageIdUpdate(newId);
+        }
+
+        setNewPackageId(newId);
+        // setOverviewFormData(initialOverviewFormData);
+      } else {
+        showPopup(
+          response?.message ||
+            "Failed to submit the Package. Please try again.",
+          "error"
+        );
+      }
+    } catch (error) {
+      throw error;
+      // console.error("Error submitting Package:", error);
+      // showPopup(
+      //   error?.message || "An error occurred while submitting the Package.",
+      //   "error"
+      // );
+    }
+  };
+
+  useImperativeHandle(ref, () => ({
+    handleSubmit
+  }));
+
+  if (!isActive) return null;
+
+  
+
+  const remainingDays = Math.max(
+    (overviewFormData.numDays || 0) - totalDayNumber,
+    0
+  );
+  const isSelectCitiesDisabled = remainingDays <= 0;
 
   return (
     <>
@@ -532,7 +597,11 @@ const Overview = ({ item }) => {
               id="validFrom"
               placeholder="Enter Valid From"
               onChange={handleInputChange}
-              value={overviewFormData.validFrom}
+              value={
+                overviewFormData.validFrom
+                  ? overviewFormData.validFrom.split("T")[0]
+                  : ""
+              }
               required
             />
           </div>
@@ -545,7 +614,11 @@ const Overview = ({ item }) => {
               id="validTo"
               placeholder="Enter Valid To"
               onChange={handleInputChange}
-              value={overviewFormData.validTo}
+              value={
+                overviewFormData.validTo
+                  ? overviewFormData.validTo.split("T")[0]
+                  : ""
+              }
               required
             />
           </div>
@@ -622,7 +695,7 @@ const Overview = ({ item }) => {
             <div ref={editorToolbarRef}></div>
             <CKEditor
               editor={DecoupledEditor}
-              data={overviewFormData.overviewDesc}
+              data={overviewFormData?.overviewDesc}
               config={{
                 toolbar: { shouldNotGroupWhenFull: true },
                 id: "overviewDesc",
@@ -728,18 +801,19 @@ const Overview = ({ item }) => {
             <input
               type="number"
               className="form-control"
-              id="numDays"
               placeholder="Enter No of Days"
               max="99"
+              min="1"
+              value={overviewFormData.numDays || ""}
               onChange={(e) => {
-                const value = Number(e.target.value);
-                if (value <= 99) {
-                  setnumDays(value);
+                const value =
+                  e.target.value === "" ? "" : Number(e.target.value);
+                if (value === "" || value <= 99) {
                   setOverviewFormData((prevForm) => ({
                     ...prevForm,
                     numDays: value,
                   }));
-                  setTotalPackageDays(value);
+                  setTotalPackageDays(value || 0);
                 }
               }}
             />
@@ -748,11 +822,9 @@ const Overview = ({ item }) => {
           <div className="form-group col-md-2 mt-4 d-flex justify-content-end">
             <button
               className="btn btn-primary btn-sm me-5"
-              onClick={(e) => {
-                e.preventDefault();
-                setCityModalOpen(true);
-              }}
+              onClick={() => handleModalToggle(true)}
               disabled={isSelectCitiesDisabled}
+              type="button"
             >
               Select Cities
             </button>
@@ -772,7 +844,7 @@ const Overview = ({ item }) => {
                 {overviewFormData?.packageItinerary?.map((item, index) => (
                   <tr key={item.sequenceColumn || index}>
                     <td>{item.sequenceColumn || index + 1}</td>
-                    <td>{item.masCity.masCityName}</td>
+                    <td>{item?.masCity?.cityName}</td>
                     <td>{item.dayNumber}</td>
                     <td>
                       <button
@@ -860,7 +932,7 @@ const Overview = ({ item }) => {
           </div>
         </form>
       </div>
-      {isCityModalOpen && (
+      {modalState.isOpen && (
         <div className="modal d-block" tabIndex="-1" role="dialog">
           <div className="modal-dialog" role="document">
             <div className="modal-content">
@@ -869,7 +941,7 @@ const Overview = ({ item }) => {
                 <button
                   type="button"
                   className="close"
-                  onClick={() => setCityModalOpen(false)}
+                  onClick={() => handleModalToggle(false)}
                 >
                   <span>&times;</span>
                 </button>
@@ -879,7 +951,7 @@ const Overview = ({ item }) => {
                   <label>City</label>
                   <select
                     className="form-control"
-                    value={selectedCity.id}
+                    value={modalState.selectedCity}
                     onChange={handleCityChange}
                   >
                     <option value="">Select a city</option>
@@ -890,12 +962,13 @@ const Overview = ({ item }) => {
                     ))}
                   </select>
                 </div>
+
                 <div className="form-group">
                   <label>No of Days</label>
                   <select
                     className="form-control"
-                    value={selectedDays}
-                    onChange={(e) => setSelectedDays(Number(e.target.value))}
+                    value={modalState.selectedDays}
+                    onChange={(e) => handleDaysChange(Number(e.target.value))}
                     disabled={remainingDays === 0}
                   >
                     {remainingDays === 0 ? (
@@ -910,11 +983,12 @@ const Overview = ({ item }) => {
                   </select>
                 </div>
               </div>
+
               <div className="modal-footer">
                 <button
                   type="button"
                   className="btn btn-secondary"
-                  onClick={() => setCityModalOpen(false)}
+                  onClick={() => handleModalToggle(false)}
                 >
                   Cancel
                 </button>
@@ -933,6 +1007,6 @@ const Overview = ({ item }) => {
       )}
     </>
   );
-};
+});
 
 export default Overview;

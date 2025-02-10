@@ -19,7 +19,7 @@ export const FACILITY='/masterController/hotel-facilities';
 export const MAS_HOTEL ='/masterController/hotels';
 
 
-export const ITINERARY ='/masterController/itinerary';
+export const ITINERARY ='/package/itinerary';
 export const PACKAGE ='/package/packageMaster';
 
 
