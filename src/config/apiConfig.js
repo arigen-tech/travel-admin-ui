@@ -1,6 +1,6 @@
 
 
-export const API_HOST = 'http://103.133.215.182:8085';
+export const API_HOST = 'https://103.133.215.182:8444';
 // export const API_HOST = 'http://localhost:1120';
 export const tableImage = 'E:/';
 

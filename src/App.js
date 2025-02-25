@@ -47,7 +47,7 @@ const PrivateRoute = ({ element, path }) => {
 function App() {
   return (
     <MenuProvider>
-    <Router>
+     <Router basename="/travel-admin-ui">
       <Suspense>
         <Routes>
             <Route path="/" element={<Login />} />
